@@ -1,12 +1,12 @@
+using Microsoft.EntityFrameworkCore;
 using Shared.MySQL;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Retrieve the connection string from configuration
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-// Register the MySQL DbContext using the shared helper
-builder.Services.AddMySQLDbContext(connectionString);
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+);
 
 var app = builder.Build();
 

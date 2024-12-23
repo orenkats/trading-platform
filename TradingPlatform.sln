@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{68939AAE-D138-48DA-AA14-4089D696D9D2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{78D15A9E-CFB3-4176-8082-73D8B94D396B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService", "Services\01-UserService\UserService.csproj", "{E2D15D4C-0B89-4701-8AE7-154874B7ABC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService", "Services\02-OrderService\OrderService.csproj", "{1FD7CF2D-7140-48E7-8954-DE4E0997E4F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentService", "Services\03-PaymentService\PaymentService.csproj", "{3DB20BE6-75C0-4FA9-877D-1F9115DB019F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockCatalogService", "Services\04-StockCatalogService\StockCatalogService.csproj", "{0AD2BF74-FF63-41CA-B9F7-BBC1CCEC4C96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransactionsService", "Services\05-TransactionsService\TransactionsService.csproj", "{454CE455-91A9-440B-A834-1277E4821325}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{68939AAE-D138-48DA-AA14-4089D696D9D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68939AAE-D138-48DA-AA14-4089D696D9D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68939AAE-D138-48DA-AA14-4089D696D9D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68939AAE-D138-48DA-AA14-4089D696D9D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2D15D4C-0B89-4701-8AE7-154874B7ABC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2D15D4C-0B89-4701-8AE7-154874B7ABC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2D15D4C-0B89-4701-8AE7-154874B7ABC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2D15D4C-0B89-4701-8AE7-154874B7ABC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FD7CF2D-7140-48E7-8954-DE4E0997E4F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FD7CF2D-7140-48E7-8954-DE4E0997E4F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FD7CF2D-7140-48E7-8954-DE4E0997E4F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FD7CF2D-7140-48E7-8954-DE4E0997E4F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DB20BE6-75C0-4FA9-877D-1F9115DB019F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DB20BE6-75C0-4FA9-877D-1F9115DB019F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DB20BE6-75C0-4FA9-877D-1F9115DB019F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DB20BE6-75C0-4FA9-877D-1F9115DB019F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AD2BF74-FF63-41CA-B9F7-BBC1CCEC4C96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AD2BF74-FF63-41CA-B9F7-BBC1CCEC4C96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AD2BF74-FF63-41CA-B9F7-BBC1CCEC4C96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AD2BF74-FF63-41CA-B9F7-BBC1CCEC4C96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{454CE455-91A9-440B-A834-1277E4821325}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{454CE455-91A9-440B-A834-1277E4821325}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{454CE455-91A9-440B-A834-1277E4821325}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{454CE455-91A9-440B-A834-1277E4821325}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E2D15D4C-0B89-4701-8AE7-154874B7ABC8} = {78D15A9E-CFB3-4176-8082-73D8B94D396B}
+		{1FD7CF2D-7140-48E7-8954-DE4E0997E4F4} = {78D15A9E-CFB3-4176-8082-73D8B94D396B}
+		{3DB20BE6-75C0-4FA9-877D-1F9115DB019F} = {78D15A9E-CFB3-4176-8082-73D8B94D396B}
+		{0AD2BF74-FF63-41CA-B9F7-BBC1CCEC4C96} = {78D15A9E-CFB3-4176-8082-73D8B94D396B}
+		{454CE455-91A9-440B-A834-1277E4821325} = {78D15A9E-CFB3-4176-8082-73D8B94D396B}
+	EndGlobalSection
+EndGlobal

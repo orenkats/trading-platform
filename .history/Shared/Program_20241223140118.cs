@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore; 
 using Microsoft.AspNetCore.Builder;
 using Shared.MySQL; 
-using Shared.Messaging;
+using Shared.RabbitMQ;
 using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);

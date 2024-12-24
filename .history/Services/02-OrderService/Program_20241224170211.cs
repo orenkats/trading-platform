@@ -3,6 +3,7 @@ using OrderService.Data;
 using OrderService.Data.Repositories;
 using OrderService.Logic;
 using Shared.Messaging;
+using Shared.RabbitMQ;
 
 var builder = WebApplication.CreateBuilder(args);
 

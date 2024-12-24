@@ -2,9 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using PortfolioService.Data;
 using PortfolioService.Data.Repositories;
 using PortfolioService.Logic;
+using PortfolioService.Logic.EventHandlers;
 using Shared.Events;
 using Shared.Messaging;
-using RabbitMQ.Client;
+using Shared.RabbitMQ;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,19 +28,16 @@ builder.Services.AddScoped<IPortfolioLogic, PortfolioLogic>();
 var rabbitMqUri = builder.Configuration.GetSection("RabbitMQ")["Uri"];
 var connectionFactory = new RabbitMqConnectionFactory(rabbitMqUri);
 var rabbitMqConnection = connectionFactory.CreateConnection();
-builder.Services.AddSingleton<IConnection>(rabbitMqConnection);
+builder.Services.AddSingleton<IEventBus>(new RabbitMqEventBus(rabbitMqConnection));
 
-// Add ConsumerHostedService for UserCreatedEvent
-builder.Services.AddHostedService(sp =>
-    new ConsumerHostedService<UserCreatedEvent>(
-        sp,
-        sp.GetRequiredService<IConnection>(),
-        "UserCreatedQueue"
-    )
-);
-
-// Register EventBus
-builder.Services.AddSingleton<IEventBus, RabbitMqEventBus>();
+// Register Event Handlers
+builder.Services.AddSingleton<UserCreatedEventHandler>();
 
 var app = builder.Build();
+
+// Subscribe to UserCreatedEvent
+var userCreatedEventHandler = app.Services.GetRequiredService<UserCreatedEventHandler>();
+var eventConsumer = new RabbitMqEventConsumer(rabbitMqConnection);
+eventConsumer.Subscribe<UserCreatedEvent>("UserCreatedQueue", userCreatedEventHandler.HandleUserCreatedEventAsync);
+
 app.Run();

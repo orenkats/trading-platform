@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using UserService.Data;
 using Shared.Messaging;
+using Shared.RabbitMQ;
 using UserService.Data.Repositories;
 using UserService.Logic;
 

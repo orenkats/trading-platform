@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using StockCatalogService.Data;
 using StockCatalogService.Data.Repositories;
+using Shared.RabbitMQ;
 using StockCatalogService.Logic;
 
 var builder = WebApplication.CreateBuilder(args);

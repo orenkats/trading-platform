@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using PaymentService.Data;
 using PaymentService.Data.Repositories;
+using PaymentService.Logic.EventHandlers;
 using Shared.Events;
 using Shared.Messaging;
-using RabbitMQ.Client;
+using Shared.RabbitMQ;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,23 +22,19 @@ builder.Services.AddDbContext<PaymentDbContext>(options =>
 // Register Repositories
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 
-// Register RabbitMQ
+// Register Event Handlers
+builder.Services.AddSingleton<OrderPlacedEventHandler>();
+
+// Configure RabbitMQ
 var rabbitMqUri = builder.Configuration.GetSection("RabbitMQ")["Uri"];
 var connectionFactory = new RabbitMqConnectionFactory(rabbitMqUri);
 var rabbitMqConnection = connectionFactory.CreateConnection();
-builder.Services.AddSingleton<IConnection>(rabbitMqConnection);
+builder.Services.AddSingleton<IEventBus>(new RabbitMqEventBus(rabbitMqConnection));
 
-// Add ConsumerHostedService for OrderPlacedEvent
-builder.Services.AddHostedService(sp =>
-    new ConsumerHostedService<OrderPlacedEvent>(
-        sp,
-        sp.GetRequiredService<IConnection>(),
-        "OrderPlacedQueue"
-    )
-);
-
-// Register EventBus
-builder.Services.AddSingleton<IEventBus, RabbitMqEventBus>();
-
+// Subscribe to OrderPlacedEvent
 var app = builder.Build();
+var orderPlacedEventHandler = app.Services.GetRequiredService<OrderPlacedEventHandler>();
+var eventConsumer = new RabbitMqEventConsumer(rabbitMqConnection);
+eventConsumer.Subscribe<OrderPlacedEvent>("OrderPlacedQueue", orderPlacedEventHandler.HandleOrderPlacedEventAsync);
+
 app.Run();

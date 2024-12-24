@@ -7,6 +7,6 @@ namespace PortfolioService.Data.Repositories
 {
     public class PortfolioRepository : Repository<Portfolio>, IPortfolioRepository
     {
-        public PortfolioRepository(PortfolioDbContext context) : base(context) { }
+        public PortfolioRepository(DbContext context) : base(context) { }
     }
 }

@@ -1,4 +1,5 @@
 using PortfolioService.Data.Entities;
+using PortfolioService.Logic;
 using Shared.Events;
 
 namespace PortfolioService.Logic.EventHandlers

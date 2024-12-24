@@ -9,20 +9,14 @@ using Shared.RabbitMQ;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure Kestrel to listen on a specific port
-builder.WebHost.ConfigureKestrel(serverOptions =>
-{
-    serverOptions.ListenLocalhost(5001); // Change the port to avoid conflict
-});
-
-// Configure PortfolioDbContext for MySQL
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// Configure Database
 builder.Services.AddDbContext<PortfolioDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection")))
+);
 
 // Register Repositories and Logic
 builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
-builder.Services.AddScoped<IPortfolioLogic, PortfolioLogic>();
+builder.Services.AddScoped<IPortfolioLogic, PortfolioLogic>(); // Ensure this is registered
 
 // Register RabbitMQ
 var rabbitMqUri = builder.Configuration.GetSection("RabbitMQ")["Uri"];

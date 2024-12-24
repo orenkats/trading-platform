@@ -6,7 +6,7 @@ namespace OrderService.Data.Entities
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
-        public string StockSymbol { get; set; } = null!;
+        public string? StockSymbol { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
         public DateTime CreatedAt { get; set; }

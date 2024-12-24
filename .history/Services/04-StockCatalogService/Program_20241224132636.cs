@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using StockCatalogService.Data;
 using StockCatalogService.Data.Repositories;
 using Shared.RabbitMQ;
-using StockCatalogService.Logic;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +17,7 @@ builder.Services.AddDbContext<StockCatalogDbContext>(options =>
 
 // Register Repository
 builder.Services.AddScoped<IStockCatalogRepository, StockCatalogRepository>();
-builder.Services.AddScoped<IStockCatalogLogic, StockCatalogLogic>();
+
 // Add Controllers
 builder.Services.AddControllers();
 

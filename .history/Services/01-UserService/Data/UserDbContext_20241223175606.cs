@@ -7,7 +7,7 @@ namespace UserService.Data
     {
         public UserDbContext(DbContextOptions<UserDbContext> options) : base(options) { }
 
-        public DbSet<User> Users { get; set; } = null!;
+        public DbSet<User> Users { get; set; } = null!; 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -17,7 +17,6 @@ namespace UserService.Data
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Name).IsRequired();
-                entity.Property(e => e.Email).IsRequired(); // Adding the Email property as required
                 entity.Property(e => e.PasswordHash).IsRequired();
                 entity.Property(e => e.AccountBalance).HasDefaultValue(0);
                 entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");

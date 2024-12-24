@@ -4,7 +4,7 @@ namespace PortfolioService.Logic
 {
     public interface IPortfolioLogic
     {
-        Task CreatePortfolioAsync(Portfolio portfolio); // Updated name
+        Task AddPortfolioAsync(Portfolio portfolio);
         Task UpdatePortfolioAsync(Portfolio portfolio);
     }
 }

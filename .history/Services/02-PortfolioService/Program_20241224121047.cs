@@ -9,14 +9,13 @@ using Shared.RabbitMQ;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure Kestrel to listen on a specific port
-builder.WebHost.ConfigureKestrel(serverOptions =>
-{
-    serverOptions.ListenLocalhost(5001); // Change the port to avoid conflict
-});
-
 // Configure PortfolioDbContext for MySQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException("Connection string 'DefaultConnection' is missing or empty.");
+}
+
 builder.Services.AddDbContext<PortfolioDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 

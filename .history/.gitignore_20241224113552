@@ -1,6 +1,4 @@
 # Build Folders
-
+/.histoty/
 **/bin/
 **/obj/
-
-/.histoty/

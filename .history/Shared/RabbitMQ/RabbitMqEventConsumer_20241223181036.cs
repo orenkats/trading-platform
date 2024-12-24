@@ -22,12 +22,12 @@ namespace Shared.RabbitMQ
             // Declare the queue
             channel.QueueDeclare(queueName, durable: true, exclusive: false, autoDelete: false);
 
-            // Bind the queue to the exchange
-            var exchangeName = "UserExchange"; // Your exchange name
+            // Declare the exchange and bind the queue
+            var exchangeName = typeof(T).Name + "Exchange";
             channel.ExchangeDeclare(exchangeName, ExchangeType.Fanout, durable: true);
             channel.QueueBind(queueName, exchangeName, routingKey: "");
 
-            // Set up a consumer to listen for messages
+            // Setup consumer to listen for messages
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += (_, ea) =>
             {
@@ -37,7 +37,7 @@ namespace Shared.RabbitMQ
                 onMessageReceived(@event!);
             };
 
-            // Start consuming messages from the queue
+            // Start consuming
             channel.BasicConsume(queueName, autoAck: true, consumer: consumer);
         }
     }

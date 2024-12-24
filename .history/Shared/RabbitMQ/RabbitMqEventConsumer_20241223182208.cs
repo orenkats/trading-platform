@@ -10,6 +10,7 @@ namespace Shared.RabbitMQ
     {
         private readonly IConnection _connection;
 
+        // Constructor to initialize the RabbitMQ connection
         public RabbitMqEventConsumer(IConnection connection)
         {
             _connection = connection;
@@ -19,21 +20,24 @@ namespace Shared.RabbitMQ
         {
             using var channel = _connection.CreateModel();
 
-            // Declare the queue
+            // Declare the queue to ensure it exists
             channel.QueueDeclare(queueName, durable: true, exclusive: false, autoDelete: false);
 
-            // Bind the queue to the exchange
-            var exchangeName = "UserExchange"; // Your exchange name
-            channel.ExchangeDeclare(exchangeName, ExchangeType.Fanout, durable: true);
-            channel.QueueBind(queueName, exchangeName, routingKey: "");
+            // Declare the exchange and bind the queue
+            var exchangeName = typeof(T).Name + "Exchange";
+            channel.ExchangeDeclare(exchangeName, ExchangeType.Fanout, durable: true); // Declare exchange
+            channel.QueueBind(queueName, exchangeName, routingKey: ""); // Bind the queue to the exchange
 
-            // Set up a consumer to listen for messages
+            // Setup consumer to listen for messages
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += (_, ea) =>
             {
+                // Deserialize the incoming message
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
                 var @event = JsonSerializer.Deserialize<T>(message);
+
+                // Invoke the callback with the deserialized message
                 onMessageReceived(@event!);
             };
 

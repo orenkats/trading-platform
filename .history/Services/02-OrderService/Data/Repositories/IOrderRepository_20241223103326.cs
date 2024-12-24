@@ -1,10 +1,10 @@
-using OrderService.Data.Entities;
 using Shared.Persistence;
+using OrderService.Data.Entities;
 
 namespace OrderService.Data.Repositories
 {
     public interface IOrderRepository : IRepository<Order>
     {
-        Task<IEnumerable<Order>> GetOrdersByUserIdAsync(Guid userId);
+        // Additional methods specific to Order can be added here if needed
     }
 }

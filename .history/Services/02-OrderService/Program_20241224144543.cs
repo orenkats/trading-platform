@@ -30,8 +30,6 @@ var connectionFactory = new RabbitMqConnectionFactory(rabbitMqUri);
 var rabbitMqConnection = connectionFactory.CreateConnection();
 builder.Services.AddSingleton<IEventBus>(new RabbitMqEventBus(rabbitMqConnection));
 
-builder.Services.AddControllers();
-
 var app = builder.Build();
 
 app.UseRouting();

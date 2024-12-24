@@ -27,6 +27,9 @@ var rabbitMqConnection = connectionFactory.CreateConnection(); // Create the con
 
 builder.Services.AddSingleton<IEventBus>(new RabbitMqEventBus(rabbitMqConnection));
 
+// Add Controller Services
+builder.Services.AddControllers();
+
 // Add Controllers
 builder.Services.AddControllers();
 

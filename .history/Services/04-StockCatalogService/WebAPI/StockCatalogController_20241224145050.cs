@@ -70,7 +70,7 @@ namespace StockCatalogService.WebAPI.Controllers
         [Route("validate/{stockSymbol}")]
         public async Task<IActionResult> ValidateStockSymbol(string stockSymbol)
         {
-            var stockExists = await _stockCatalogRepository.ExistsAsync(stockSymbol);
+            var stockExists = await _stockCatalogRepository.ExistsAsync(s => s.StockSymbol == stockSymbol);
             return Ok(stockExists);
         }
     }

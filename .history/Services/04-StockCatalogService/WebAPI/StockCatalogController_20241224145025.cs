@@ -11,7 +11,7 @@ namespace StockCatalogService.WebAPI.Controllers
         private readonly IStockCatalogLogic _stockCatalogLogic;
         private readonly IStockCatalogRepository _stockCatalogRepository;
 
-        public StockCatalogController(IStockCatalogLogic stockCatalogLogic,IStockCatalogRepository stockCatalogRepository)
+        public StockCatalogController(IStockCatalogLogic stockCatalogLogic)
         {
             _stockCatalogLogic = stockCatalogLogic;
             _stockCatalogRepository = stockCatalogRepository;
@@ -70,7 +70,7 @@ namespace StockCatalogService.WebAPI.Controllers
         [Route("validate/{stockSymbol}")]
         public async Task<IActionResult> ValidateStockSymbol(string stockSymbol)
         {
-            var stockExists = await _stockCatalogRepository.ExistsAsync(stockSymbol);
+            var stockExists = await _stockCatalogRepository.ExistsAsync(s => s.StockSymbol == stockSymbol);
             return Ok(stockExists);
         }
     }

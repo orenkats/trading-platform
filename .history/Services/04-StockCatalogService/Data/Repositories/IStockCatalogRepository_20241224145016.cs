@@ -5,6 +5,6 @@ namespace StockCatalogService.Data.Repositories
 {
     public interface IStockCatalogRepository : IRepository<StockCatalog>
     {
-        Task<bool> ExistsAsync(string stockSymbol);
+        // Additional methods specific to StockCatalog can be added here if needed
     }
 }

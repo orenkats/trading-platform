@@ -6,7 +6,7 @@ namespace StockCatalogService.Data.Repositories
 {
     public class StockCatalogRepository : Repository<StockCatalog>, IStockCatalogRepository
     {
-        private new readonly StockCatalogDbContext _context;
+        private readonly StockCatalogDbContext _context;
 
         public StockCatalogRepository(StockCatalogDbContext context) : base(context)
         {

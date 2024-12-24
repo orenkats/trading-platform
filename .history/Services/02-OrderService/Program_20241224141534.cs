@@ -13,8 +13,6 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
     serverOptions.ListenLocalhost(5003); // Use a different port for OrderService
 });
 
-builder.Services.AddHttpClient();
-
 // Configure OrderDbContext for MySQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<OrderDbContext>(options =>
@@ -29,8 +27,6 @@ var rabbitMqUri = builder.Configuration.GetSection("RabbitMQ")["Uri"];
 var connectionFactory = new RabbitMqConnectionFactory(rabbitMqUri);
 var rabbitMqConnection = connectionFactory.CreateConnection();
 builder.Services.AddSingleton<IEventBus>(new RabbitMqEventBus(rabbitMqConnection));
-
-builder.Services.AddControllers();
 
 var app = builder.Build();
 

@@ -1,11 +1,9 @@
-using System.Threading;
-using System.Threading.Tasks;
+using System.Text;
+using System.Text.Json;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using System.Text;
-using System.Text.Json;
 
 namespace Shared.Messaging
 {
@@ -15,26 +13,23 @@ namespace Shared.Messaging
         private readonly IConnection _connection;
         private readonly string _queueName;
 
-        public ConsumerHostedService(IServiceProvider serviceProvider, IConnection connection, string queueName)
+        public ConsumerHostedService(IServiceProvider serviceProvider, IConnection connection, ConsumerHostedServiceOptions options)
         {
             _serviceProvider = serviceProvider;
             _connection = connection;
-            _queueName = queueName;
+            _queueName = options.QueueName ?? throw new ArgumentNullException(nameof(options.QueueName));
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var channel = _connection.CreateModel();
 
-            // Declare the queue if not already present
-            channel.QueueDeclare(queue: _queueName, durable: true, exclusive: false, autoDelete: false);
-
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += async (_, ea) =>
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
-                var @event = JsonSerializer.Deserialize<TEvent>(message);
+                TEvent? @event = JsonSerializer.Deserialize<TEvent>(message);
 
                 if (@event != null)
                 {
@@ -47,14 +42,26 @@ namespace Shared.Messaging
                         var handleMethod = handler.GetType().GetMethod("HandleAsync");
                         if (handleMethod != null)
                         {
-                            await (Task)handleMethod.Invoke(handler, new object[] { @event });
+                            var task = handleMethod.Invoke(handler, new object[] { @event }) as Task;
+                            if (task == null)
+                            {
+                                throw new InvalidOperationException($"The method {handleMethod.Name} did not return a Task.");
+                            }
+
+                            await task;
                         }
                     }
                 }
             };
 
+            // Consume messages from the existing queue
             channel.BasicConsume(queue: _queueName, autoAck: true, consumer: consumer);
             return Task.CompletedTask;
         }
+    }
+
+    public class ConsumerHostedServiceOptions
+    {
+        public string? QueueName { get; set; }
     }
 }

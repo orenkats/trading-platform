@@ -9,7 +9,7 @@ namespace PaymentService.Data.Entities
         public Guid UserId { get; set; } // Associated User ID
         public decimal Amount { get; set; } // Payment amount
         public string Status { get; set; } = "Pending"; // Payment status (Pending, Approved, Failed)
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // Timestamp for payment creation
         public DateTime? ApprovedAt { get; set; } // Timestamp for approval (nullable)
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // Automatically set when the payment is created
     }
 }

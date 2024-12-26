@@ -19,6 +19,7 @@ namespace UserService.Data
                 entity.Property(e => e.Name).IsRequired();
                 entity.Property(e => e.Email).IsRequired(); // Adding the Email property as required
                 entity.Property(e => e.PasswordHash).IsRequired();
+                entity.Property(e => e.AccountBalance).HasDefaultValue(0);
                 entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
             });
         }

@@ -7,8 +7,5 @@ namespace PortfolioService.Logic
         Task CreatePortfolioAsync(Portfolio portfolio); // Use the existing method
         Task UpdatePortfolioAsync(Portfolio portfolio);
         Task<Portfolio?> GetPortfolioByUserIdAsync(Guid userId);
-
-        // Holding-specific methods
-        Task AddOrUpdateHoldingAsync(Guid userId, Holding holding);
     }
 }

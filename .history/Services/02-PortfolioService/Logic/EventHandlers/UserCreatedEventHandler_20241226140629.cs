@@ -43,6 +43,13 @@ namespace PortfolioService.Logic.EventHandlers
                     await _portfolioLogic.CreatePortfolioAsync(portfolio);
                 }
 
+                // Add holdings (if any) - for now we assume no holdings on portfolio creation
+                // You can later add the logic for default holdings if needed
+                if (portfolio.Holdings.Count == 0)
+                {
+                    _logger.LogInformation($"No holdings found for UserId: {userCreatedEvent.UserId}. No holdings to add.");
+                }
+
                 _logger.LogInformation($"Portfolio created or verified successfully for UserId: {userCreatedEvent.UserId}");
 
             }

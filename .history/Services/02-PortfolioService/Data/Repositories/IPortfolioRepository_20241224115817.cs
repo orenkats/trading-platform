@@ -5,6 +5,6 @@ namespace PortfolioService.Data.Repositories
 {
     public interface IPortfolioRepository : IRepository<Portfolio>
     {
-        Task<Portfolio?> GetPortfolioByUserIdAsync(Guid userId);
+        // Add any portfolio-specific methods here
     }
 }

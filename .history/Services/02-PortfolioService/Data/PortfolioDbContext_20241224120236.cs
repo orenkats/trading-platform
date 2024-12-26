@@ -19,13 +19,10 @@ namespace PortfolioService.Data
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
-                entity.Property(e => e.AccountBalance)
-                      .IsRequired()
-                      .HasDefaultValue(0.00m); // Default value for new portfolios
 
                 // Define one-to-many relationship with Holdings
                 entity.HasMany(e => e.Holdings)
-                      .WithOne(h => h.Portfolio) // Specify the navigation property
+                      .WithOne()
                       .HasForeignKey(h => h.PortfolioId)
                       .OnDelete(DeleteBehavior.Cascade);
             });

@@ -8,6 +8,7 @@ namespace UserService.Data.Entities
         public string Name { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string PasswordHash { get; set; } = null!;
+        public decimal AccountBalance { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

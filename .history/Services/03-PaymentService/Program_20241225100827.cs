@@ -18,7 +18,6 @@ builder.WebHost.ConfigureKestrel(options =>
 var rabbitMqUri = builder.Configuration.GetSection("RabbitMQ")["Uri"];
 var rabbitMqConnectionFactory = new RabbitMqConnectionFactory(rabbitMqUri);
 var rabbitMqConnection = rabbitMqConnectionFactory.CreateConnection();
-// IConnection is resolved by DI for RabbitMQ consumers.
 builder.Services.AddSingleton<IConnection>(rabbitMqConnection);
 
 // Configure Database

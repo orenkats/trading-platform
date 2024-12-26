@@ -7,7 +7,6 @@ namespace PortfolioService.Data.Entities
     {
         public Guid Id { get; set; } // Unique ID for the Portfolio
         public Guid UserId { get; set; } // Relationship with the User
-        public decimal AccountBalance { get; set; } // Account balance for the portfolio
         public List<Holding> Holdings { get; set; } = new List<Holding>(); // List of Holdings
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // Portfolio creation time
     }

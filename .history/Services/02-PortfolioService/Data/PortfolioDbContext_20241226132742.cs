@@ -25,7 +25,7 @@ namespace PortfolioService.Data
 
                 // Define one-to-many relationship with Holdings
                 entity.HasMany(e => e.Holdings)
-                      .WithOne(h => h.Portfolio) // Specify the navigation property
+                      .WithOne()
                       .HasForeignKey(h => h.PortfolioId)
                       .OnDelete(DeleteBehavior.Cascade);
             });

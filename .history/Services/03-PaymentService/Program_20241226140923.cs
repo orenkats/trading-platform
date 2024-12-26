@@ -35,16 +35,28 @@ builder.Services.AddSingleton<IEventBus>(sp => new RabbitMqEventBus(rabbitMqConn
 // Register Event Handlers
 builder.Services.AddScoped<IEventHandler<OrderPlacedEvent>, OrderPlacedEventHandler>();
 
-// Configure and Register ConsumerHostedService
+// Configure and Register ConsumerHostedService for OrderPlacedEvent
 builder.Services.AddHostedService<ConsumerHostedService<OrderPlacedEvent>>(provider =>
 {
     var connection = provider.GetRequiredService<IConnection>();
     var options = new ConsumerHostedServiceOptions
     {
-        QueueName = "OrderPlacedQueue"
+        QueueName = "OrderPlacedQueue" // Consume events from OrderPlacedQueue
     };
     return new ConsumerHostedService<OrderPlacedEvent>(provider, connection, options);
 });
+
+// Configure and Register ConsumerHostedService for UserCreatedEvent
+builder.Services.AddHostedService<ConsumerHostedService<UserCreatedEvent>>(provider =>
+{
+    var connection = provider.GetRequiredService<IConnection>();
+    var options = new ConsumerHostedServiceOptions
+    {
+        QueueName = "UserCreatedQueue" // Consume events from UserCreatedQueue
+    };
+    return new ConsumerHostedService<UserCreatedEvent>(provider, connection, options);
+});
+
 
 // Run the application
 var app = builder.Build();

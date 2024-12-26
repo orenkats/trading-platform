@@ -4,6 +4,7 @@
         "name": "Alice Johnson",
         "email": "alice.johnson@example.com",
         "passwordHash": "a5b6c7d8e9f0g1h2i3j4k5l6",
+        "accountBalance": 1200.75,
         "createdAt": "2024-12-23T10:00:00"
     },
     {
@@ -11,6 +12,7 @@
         "name": "Bob Williams",
         "email": "bob.williams@example.com",
         "passwordHash": "b6c7d8e9f0g1h2i3j4k5l6m7",
+        "accountBalance": 890.30,
         "createdAt": "2024-12-23T11:00:00"
     },
     {
@@ -18,6 +20,7 @@
         "name": "Catherine Brown",
         "email": "catherine.brown@example.com",
         "passwordHash": "c7d8e9f0g1h2i3j4k5l6m7n8",
+        "accountBalance": 650.00,
         "createdAt": "2024-12-23T12:00:00"
     },
     {
@@ -25,6 +28,7 @@
         "name": "David Davis",
         "email": "david.davis@example.com",
         "passwordHash": "d8e9f0g1h2i3j4k5l6m7n8o9",
+        "accountBalance": 300.25,
         "createdAt": "2024-12-23T13:00:00"
     },
     {
@@ -32,6 +36,7 @@
         "name": "Eve Martin",
         "email": "eve.martin@example.com",
         "passwordHash": "e9f0g1h2i3j4k5l6m7n8o9p0",
+        "accountBalance": 1400.60,
         "createdAt": "2024-12-23T14:00:00"
     },
     {
@@ -39,6 +44,7 @@
         "name": "Frank Garcia",
         "email": "frank.garcia@example.com",
         "passwordHash": "f0g1h2i3j4k5l6m7n8o9p0q1",
+        "accountBalance": 720.15,
         "createdAt": "2024-12-23T15:00:00"
     },
     {
@@ -46,6 +52,7 @@
         "name": "Grace Martinez",
         "email": "grace.martinez@example.com",
         "passwordHash": "g1h2i3j4k5l6m7n8o9p0q1r2",
+        "accountBalance": 500.50,
         "createdAt": "2024-12-23T16:00:00"
     },
     {
@@ -53,6 +60,7 @@
         "name": "Henry Lee",
         "email": "henry.lee@example.com",
         "passwordHash": "h2i3j4k5l6m7n8o9p0q1r2s3",
+        "accountBalance": 1000.80,
         "createdAt": "2024-12-23T17:00:00"
     },
     {
@@ -60,6 +68,7 @@
         "name": "Isabella Walker",
         "email": "isabella.walker@example.com",
         "passwordHash": "i3j4k5l6m7n8o9p0q1r2s3t4",
+        "accountBalance": 890.40,
         "createdAt": "2024-12-23T18:00:00"
     },
     {
@@ -67,6 +76,7 @@
         "name": "James Allen",
         "email": "james.allen@example.com",
         "passwordHash": "j4k5l6m7n8o9p0q1r2s3t4u5",
+        "accountBalance": 300.00,
         "createdAt": "2024-12-23T19:00:00"
     }
 ]

@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TransactionsService.Data;
 using TransactionsService.Data.Repositories;
-using TransactionsService.Logic.EventHandlers;
 using Shared.Messaging;
 using Shared.Events;
 using RabbitMQ.Client;
@@ -30,20 +29,20 @@ builder.Services.AddDbContext<TransactionDbContext>(options =>
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 
 // Register RabbitMQ EventBus
+builder.Services.AddSingleton<IEventBus, RabbitMqEventBus>();
 builder.Services.AddSingleton<IEventBus>(sp => new RabbitMqEventBus(rabbitMqConnection));
-
 // Register Event Handlers
-builder.Services.AddScoped<IEventHandler<object>, FundsEventHandler>();
+//builder.Services.AddScoped<IEventHandler<OrderPlacedEvent>, OrderPlacedEventHandler>();
 
-// Configure and Register ConsumerHostedService for a single queue
-builder.Services.AddHostedService<ConsumerHostedService<object>>(provider =>
+// Configure and Register ConsumerHostedService
+builder.Services.AddHostedService<ConsumerHostedService<OrderPlacedEvent>>(provider =>
 {
     var connection = provider.GetRequiredService<IConnection>();
     var options = new ConsumerHostedServiceOptions
     {
-        QueueName = "FundsQueue" // Unified queue for deposit and withdrawal events
+        QueueName = "OrderPlacedQueue"
     };
-    return new ConsumerHostedService<object>(provider, connection, options);
+    return new ConsumerHostedService<OrderPlacedEvent>(provider, connection, options);
 });
 
 // Run the application

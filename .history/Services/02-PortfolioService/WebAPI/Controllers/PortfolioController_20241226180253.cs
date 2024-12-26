@@ -72,7 +72,11 @@ namespace PortfolioService.WebAPI.Controllers
 
                 if (portfolio != null)
                 {
-                    return Ok(portfolio.AccountBalance);
+                    return Ok(new
+                    {
+                        UserId = userId,
+                        AccountBalance = portfolio.AccountBalance
+                    });
                 }
                 else
                 {
@@ -84,6 +88,5 @@ namespace PortfolioService.WebAPI.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
-
     }
 }

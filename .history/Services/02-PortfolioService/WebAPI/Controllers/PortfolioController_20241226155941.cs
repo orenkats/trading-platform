@@ -22,6 +22,7 @@ namespace PortfolioService.WebAPI.Controllers
         {
             try
             {
+                // Call the logic layer to deposit funds
                 bool result = await _portfolioLogic.DepositFundsAsync(userId, amount);
 
                 if (result)
@@ -45,6 +46,7 @@ namespace PortfolioService.WebAPI.Controllers
         {
             try
             {
+                // Call the logic layer to withdraw funds
                 bool result = await _portfolioLogic.WithdrawFundsAsync(userId, amount);
 
                 if (result)
@@ -61,29 +63,5 @@ namespace PortfolioService.WebAPI.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
-
-        // Get Account Balance
-        [HttpGet("balance")]
-        public async Task<IActionResult> GetAccountBalance(Guid userId)
-        {
-            try
-            {
-                var portfolio = await _portfolioLogic.GetPortfolioByUserIdAsync(userId);
-
-                if (portfolio != null)
-                {
-                    return Ok(portfolio.AccountBalance);
-                }
-                else
-                {
-                    return NotFound(new { Message = "Portfolio not found for the specified user." });
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = ex.Message });
-            }
-        }
-
     }
 }

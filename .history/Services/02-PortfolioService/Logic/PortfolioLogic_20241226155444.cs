@@ -1,22 +1,15 @@
 using PortfolioService.Data.Entities;
 using PortfolioService.Data.Repositories;
-using Shared.Events;
-using Shared.Messaging;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PortfolioService.Logic
 {
     public class PortfolioLogic : IPortfolioLogic
     {
         private readonly IPortfolioRepository _portfolioRepository;
-        private readonly IEventBus _eventBus;
 
-        public PortfolioLogic(IPortfolioRepository portfolioRepository, IEventBus eventBus)
+        public PortfolioLogic(IPortfolioRepository portfolioRepository)
         {
             _portfolioRepository = portfolioRepository;
-            _eventBus = eventBus;
         }
 
         public async Task CreatePortfolioAsync(Portfolio portfolio)
@@ -95,16 +88,6 @@ namespace PortfolioService.Logic
             // Update the portfolio in the database
             await UpdatePortfolioAsync(portfolio);
 
-            // Publish FundsDepositedEvent to notify other services
-            var fundsDepositedEvent = new FundsDepositedEvent
-            {
-                UserId = userId,
-                Amount = amount,
-                Timestamp = DateTime.UtcNow
-            };
-
-            _eventBus.Publish(fundsDepositedEvent, "PortfolioTransactionsExchange");
-
             return true;
         }
 
@@ -134,16 +117,6 @@ namespace PortfolioService.Logic
 
             // Update the portfolio in the database
             await UpdatePortfolioAsync(portfolio);
-
-            // Publish FundsWithdrawnEvent to notify other services
-            var fundsWithdrawnEvent = new FundsWithdrawnEvent
-            {
-                UserId = userId,
-                Amount = amount,
-                Timestamp = DateTime.UtcNow
-            };
-
-            _eventBus.Publish(fundsWithdrawnEvent, "PortfolioTransactionsExchange");
 
             return true;
         }

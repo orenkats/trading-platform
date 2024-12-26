@@ -6,6 +6,5 @@ namespace OrderService.Logic
     {
         Task PlaceOrderAsync(Order order);
         Task<IEnumerable<Order>> GetOrdersByUserIdAsync(Guid userId);
-        
     }
 }

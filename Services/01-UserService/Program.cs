@@ -1,31 +1,15 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-using UserService.Data;
-using Shared.Messaging;
-using UserService.Data.Repositories;
-using UserService.Logic;
+using UserService.Configurations;
+using UserService.Extensions;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure UserDbContext for MySQL
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<UserDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
-);
+builder.ConfigureKestrel();
+builder.Services.AddDbConfiguration(builder.Configuration);
+builder.Services.AddRabbitMqConfiguration(builder.Configuration);
 
-// Configure Repositories
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-
-// Configure Business Logic
-builder.Services.AddScoped<IUserLogic, UserLogic>();
-
-// Configure RabbitMQ
-var rabbitMqUri = builder.Configuration.GetSection("RabbitMQ")["Uri"];
-var connectionFactory = new RabbitMqConnectionFactory(rabbitMqUri);
-var rabbitMqConnection = connectionFactory.CreateConnection(); // Create the connection here
-
-builder.Services.AddSingleton<IEventBus>(new RabbitMqEventBus(rabbitMqConnection));
-
+builder.Services.AddRepositories();
+builder.Services.AddLogic();
 // Add Controllers
 builder.Services.AddControllers();
 

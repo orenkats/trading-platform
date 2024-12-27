@@ -103,7 +103,7 @@ namespace PortfolioService.Logic
                 Timestamp = DateTime.UtcNow
             };
 
-            _eventBus.Publish(fundsDepositedEvent, "PortfolioTransactionsExchange");
+            _eventBus.Publish(fundsDepositedEvent, "PortfolioExchange");
 
             return true;
         }
@@ -143,7 +143,7 @@ namespace PortfolioService.Logic
                 Timestamp = DateTime.UtcNow
             };
 
-            _eventBus.Publish(fundsWithdrawnEvent, "PortfolioTransactionsExchange");
+            _eventBus.Publish(fundsWithdrawnEvent, "PortfolioExchange");
 
             return true;
         }

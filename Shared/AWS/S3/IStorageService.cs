@@ -1,4 +1,4 @@
-namespace Shared.S3
+namespace Shared.AWS.S3
 {
     public interface IStorageService
     {

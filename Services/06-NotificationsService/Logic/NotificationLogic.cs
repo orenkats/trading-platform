@@ -1,22 +1,37 @@
-using MimeKit;
-using MailKit.Net.Smtp;
 
-namespace NotificationsService.Logic;
-
-public class NotificationLogic : INotificationLogic
+namespace NotificationsService.Logic
 {
-    public async Task SendEmailAsync(string email, string subject, string message)
+    public class NotificationLogic : INotificationLogic
     {
-        var emailMessage = new MimeMessage();
-        emailMessage.From.Add(new MailboxAddress("Trading Platform", "no-reply@tradingplatform.com"));
-        emailMessage.To.Add(new MailboxAddress("", email));
-        emailMessage.Subject = subject;
-        emailMessage.Body = new TextPart("plain") { Text = message };
+        private readonly ILogger<NotificationLogic> _logger;
 
-        using var client = new SmtpClient();
-        await client.ConnectAsync("smtp.example.com", 587, false); // Replace with actual SMTP server
-        await client.AuthenticateAsync("username", "password"); // Replace with actual credentials
-        await client.SendAsync(emailMessage);
-        await client.DisconnectAsync(true);
+        public NotificationLogic(ILogger<NotificationLogic> logger)
+        {
+            _logger = logger;
+        }
+
+        public async Task SendEmailAsync(string email, string subject, string message)
+        {
+            try
+            {
+                // Simulate email sending by logging to the console
+                _logger.LogInformation("Simulating email sending...");
+                Console.WriteLine("Simulated Email Sending:");
+                Console.WriteLine($"To: {email}");
+                Console.WriteLine($"Subject: {subject}");
+                Console.WriteLine($"Message: {message}");
+
+                // Simulate a slight delay to mimic asynchronous behavior
+                await Task.Delay(500);
+
+                _logger.LogInformation("Email simulated successfully for {Email}", email);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to simulate email sending to {Email}", email);
+                throw;
+            }
+        }
     }
 }
+

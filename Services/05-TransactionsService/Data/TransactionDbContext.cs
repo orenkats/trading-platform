@@ -20,7 +20,7 @@ namespace TransactionsService.Data
                 entity.HasKey(t => t.Id);  // Define the primary key
 
                 // Configure properties
-                entity.Property(t => t.TransactionType)
+                entity.Property(t => t.Type)
                     .IsRequired()
                     .HasMaxLength(50);  // Limiting the length of TransactionType
 

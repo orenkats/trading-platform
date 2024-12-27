@@ -1,51 +1,23 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using NotificationsService.Data.Repositories;
-using NotificationsService.Logic;
-using Shared.Messaging;
-using Shared.Events;
-using NotificationsService.Logic.EventHandlers;
-using RabbitMQ.Client;
+using NotificationsService.Configurations;
+using NotificationsService.Extensions;
+using NotificationsService.EventConsumers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure RabbitMQ
-var rabbitMqUri = builder.Configuration.GetSection("RabbitMQ")["Uri"];
-var rabbitMqConnectionFactory = new ConnectionFactory { Uri = new Uri(rabbitMqUri) };
-var rabbitMqConnection = rabbitMqConnectionFactory.CreateConnection();
-builder.Services.AddSingleton<IConnection>(rabbitMqConnection);
+// Kestrel configuration
+builder.ConfigureKestrel();
 
-// Register Repositories
-builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+// Service registration
 
-// Register Logic
-builder.Services.AddScoped<INotificationLogic, NotificationLogic>();
+builder.Services.AddRabbitMqConfiguration(builder.Configuration);
+builder.Services.AddRepositories();
+builder.Services.AddLogic();
+builder.Services.AddEventHandlers();
 
-// Configure and Register ConsumerHostedService for a single queue
-builder.Services.AddHostedService<ConsumerHostedService<object>>(provider =>
-{
-    var connection = provider.GetRequiredService<IConnection>();
-    var options = new ConsumerHostedServiceOptions
-    {
-        QueueName = "TransactionsQueue" // Unified queue for deposit and withdrawal events
-    };
-    return new ConsumerHostedService<object>(provider, connection, options);
-});
+// Register Consumers
+builder.Services.AddHostedService<UserCreatedEventConsumer>();
+builder.Services.AddHostedService<FundsEventConsumer>();
 
-// Configure and Register ConsumerHostedService
-builder.Services.AddHostedService<ConsumerHostedService<UserCreatedEvent>>(provider =>
-{
-    var connection = provider.GetRequiredService<IConnection>();
-    var options = new ConsumerHostedServiceOptions
-    {
-        QueueName = "UserCreatedQueue"
-    };
-    return new ConsumerHostedService<UserCreatedEvent>(provider, connection, options);
-});
-
-// Configure Web API
-builder.Services.AddControllers();
 
 var app = builder.Build();
-app.MapControllers();
 app.Run();

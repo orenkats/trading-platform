@@ -1,4 +1,4 @@
-namespace PortfolioService.Configurations
+namespace PortfolioService.Infrastructure.Configurations
 {
     public static class KestrelConfiguration
     {

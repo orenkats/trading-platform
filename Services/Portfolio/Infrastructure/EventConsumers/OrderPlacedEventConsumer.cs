@@ -2,7 +2,7 @@ using Shared.Events;
 using Shared.Messaging;
 using RabbitMQ.Client;
 
-namespace PortfolioService.EventConsumers
+namespace PortfolioService.Infrastructure.EventConsumers
 {
     public class OrderPlacedEventConsumer : ConsumerHostedService<OrderPlacedEvent>
     {

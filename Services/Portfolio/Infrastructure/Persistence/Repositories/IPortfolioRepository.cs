@@ -1,7 +1,7 @@
-using PortfolioService.Data.Entities;
+using PortfolioService.Domain.Entities;
 using Shared.Persistence;
 
-namespace PortfolioService.Data.Repositories
+namespace PortfolioService.Infrastructure.Persistence.Repositories
 {
     public interface IPortfolioRepository : IRepository<Portfolio>
     {

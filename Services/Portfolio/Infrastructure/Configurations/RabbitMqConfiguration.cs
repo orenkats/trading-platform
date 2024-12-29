@@ -1,7 +1,7 @@
 using RabbitMQ.Client;
 using Shared.Messaging;
 
-namespace PortfolioService.Configurations
+namespace PortfolioService.Infrastructure.Configurations
 {
     public static class RabbitMqConfiguration
     {

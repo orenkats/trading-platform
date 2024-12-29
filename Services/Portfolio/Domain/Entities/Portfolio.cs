@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace PortfolioService.Data.Entities
+namespace PortfolioService.Domain.Entities
 {
     public class Portfolio
     {

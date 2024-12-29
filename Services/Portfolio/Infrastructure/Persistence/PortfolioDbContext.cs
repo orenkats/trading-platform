@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using PortfolioService.Data.Entities;
+using PortfolioService.Domain.Entities;
 
-namespace PortfolioService.Data
+namespace PortfolioService.Infrastructure.Persistence
 {
     public class PortfolioDbContext : DbContext
     {

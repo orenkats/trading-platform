@@ -2,9 +2,6 @@ using PortfolioService.Data.Entities;
 using PortfolioService.Data.Repositories;
 using Shared.Events;
 using Shared.Messaging;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PortfolioService.Logic
 {

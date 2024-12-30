@@ -6,18 +6,18 @@ namespace PortfolioService.Application.Queries
 {
     public class GetPortfolioQuery
     {
-        private readonly IPortfolioRepository _repository;
+        private readonly IPortfolioRepository _portfolioRepository;
         private readonly Guid _userId;
 
         public GetPortfolioQuery(Guid userId, IPortfolioRepository repository)
         {
             _userId = userId;
-            _repository = repository;
+            _portfolioRepository = repository;
         }
 
         public async Task<Portfolio?> ExecuteAsync()
         {
-            return await _repository.GetPortfolioByUserIdAsync(_userId);
+            return await _portfolioRepository.GetPortfolioByUserIdAsync(_userId);
         }
     }
 }

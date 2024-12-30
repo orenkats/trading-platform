@@ -13,6 +13,11 @@ namespace Shared.Messaging
                     channel.QueueBind(queue: "PortfolioService_UserCreatedQueue", exchange: "UserExchange", routingKey: "");
                     break;
 
+                case "PortfolioService_OrderPlacedQueue":
+                    channel.QueueDeclare(queue: "PortfolioService_OrderPlacedQueue", durable: true, exclusive: false, autoDelete: false, arguments: null);
+                    channel.QueueBind(queue: "PortfolioService_OrderPlacedQueue", exchange: "OrderExchange", routingKey: "");
+                    break;    
+
                 case "NotificationsService_UserCreatedQueue":
                     channel.QueueDeclare(queue: "NotificationsService_UserCreatedQueue", durable: true, exclusive: false, autoDelete: false, arguments: null);
                     channel.QueueBind(queue: "NotificationsService_UserCreatedQueue", exchange: "UserExchange", routingKey: "");

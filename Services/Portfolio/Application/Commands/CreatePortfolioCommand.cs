@@ -1,23 +1,23 @@
+using PortfolioService.Domain.Entities;
 using PortfolioService.Domain.Interfaces;
 
 namespace PortfolioService.Application.Commands
 {
-    public class WithdrawFundsCommand
+    public class CreatePortfolioCommand
     {
         private readonly Guid _userId;
-        private readonly decimal _amount;
         private readonly IPortfolioDomainService _domainService;
 
-        public WithdrawFundsCommand(Guid userId, decimal amount, IPortfolioDomainService domainService)
+        public CreatePortfolioCommand(Guid userId, IPortfolioDomainService domainService)
         {
             _userId = userId;
-            _amount = amount;
             _domainService = domainService;
         }
 
         public async Task ExecuteAsync()
         {
-            await _domainService.WithdrawFundsAsync(_userId, _amount);
+            // Call domain service to handle the business logic
+            await _domainService.CreatePortfolioAsync(_userId);
         }
     }
 }

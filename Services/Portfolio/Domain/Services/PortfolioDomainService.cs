@@ -7,32 +7,52 @@ namespace PortfolioService.Domain.Services
 {
     public class PortfolioDomainService : IPortfolioDomainService
     {
-        private readonly IPortfolioRepository _repository;
+        private readonly IPortfolioRepository _portfolioRepository;
 
         public PortfolioDomainService(IPortfolioRepository repository)
         {
-            _repository = repository;
+            _portfolioRepository = repository;
         }
+        public async Task CreatePortfolioAsync(Guid userId)
+        {
+            // Check if a portfolio already exists for the user
+            var existingPortfolio = await _portfolioRepository.GetPortfolioByUserIdAsync(userId);
+            if (existingPortfolio != null)
+            {
+                throw new PortfolioAlreadyExistsException(userId);
+            }
+
+            // Create a new portfolio
+            var newPortfolio = new Portfolio
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                CreatedAt = DateTime.UtcNow,
+                AccountBalance = 0 // Default balance
+            };
+
+            await _portfolioRepository.AddAsync(newPortfolio);
+        }
+    
 
         public decimal CalculateUpdatedBalance(decimal currentBalance, decimal amount, bool isDeposit)
         {
-            if (isDeposit)
-            {
-                return currentBalance + amount;
-            }
+            if (amount <= 0)
+                throw new InvalidAmountException();
 
-            if (currentBalance < amount)
-            {
-                throw new InsufficientFundsException("Insufficient funds for withdrawal.");
-            }
+            if (!isDeposit && currentBalance < amount)
+                throw new InsufficientFundsException();
 
-            return currentBalance - amount;
+            return isDeposit ? currentBalance + amount : currentBalance - amount;
         }
 
         public async Task AddOrUpdateHoldingAsync(Guid userId, Holding newHolding)
         {
-            var portfolio = await _repository.GetPortfolioByUserIdAsync(userId)
-                ?? throw new Exception("Portfolio not found.");
+            if (newHolding.Quantity <= 0)
+                throw new InvalidHoldingException("Holding quantity must be greater than zero.");
+
+            var portfolio = await _portfolioRepository.GetPortfolioByUserIdAsync(userId)
+                ?? throw new PortfolioNotFoundException(userId);
 
             var existingHolding = portfolio.Holdings
                 .FirstOrDefault(h => h.StockSymbol == newHolding.StockSymbol);
@@ -51,34 +71,33 @@ namespace PortfolioService.Domain.Services
                 portfolio.Holdings.Add(newHolding);
             }
 
-            await _repository.UpdateAsync(portfolio);
+            await _portfolioRepository.UpdateAsync(portfolio);
         }
 
         public async Task DepositFundsAsync(Guid userId, decimal amount)
         {
             if (amount <= 0)
-                throw new ArgumentException("Deposit amount must be greater than zero.");
+                throw new InvalidAmountException();
 
-            var portfolio = await _repository.GetPortfolioByUserIdAsync(userId)
-                ?? throw new Exception("Portfolio not found.");
+            var portfolio = await _portfolioRepository.GetPortfolioByUserIdAsync(userId)
+                ?? throw new PortfolioNotFoundException(userId);
 
             portfolio.AccountBalance = CalculateUpdatedBalance(portfolio.AccountBalance, amount, isDeposit: true);
 
-            await _repository.UpdateAsync(portfolio);
+            await _portfolioRepository.UpdateAsync(portfolio);
         }
 
         public async Task WithdrawFundsAsync(Guid userId, decimal amount)
         {
             if (amount <= 0)
-                throw new ArgumentException("Withdrawal amount must be greater than zero.");
+                throw new InvalidAmountException();
 
-            var portfolio = await _repository.GetPortfolioByUserIdAsync(userId)
-                ?? throw new Exception("Portfolio not found.");
+            var portfolio = await _portfolioRepository.GetPortfolioByUserIdAsync(userId)
+                ?? throw new PortfolioNotFoundException(userId);
 
             portfolio.AccountBalance = CalculateUpdatedBalance(portfolio.AccountBalance, amount, isDeposit: false);
 
-            await _repository.UpdateAsync(portfolio);
+            await _portfolioRepository.UpdateAsync(portfolio);
         }
-
     }
 }

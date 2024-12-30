@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using PortfolioService.Logic;
+using PortfolioService.Application.Services;
+using PortfolioService.Application.DTOs;
+using PortfolioService.Application.Queries;
 using System;
 using System.Threading.Tasks;
 
@@ -9,29 +11,25 @@ namespace PortfolioService.WebAPI.Controllers
     [ApiController]
     public class PortfolioController : ControllerBase
     {
-        private readonly IPortfolioLogic _portfolioLogic;
+        private readonly IPortfolioAppService _portfolioAppService;
+        private readonly GetAccountBalanceQuery _getAccountBalanceQuery;
 
-        public PortfolioController(IPortfolioLogic portfolioLogic)
+        public PortfolioController(
+            IPortfolioAppService portfolioAppService,
+            GetAccountBalanceQuery getAccountBalanceQuery)
         {
-            _portfolioLogic = portfolioLogic;
+            _portfolioAppService = portfolioAppService;
+            _getAccountBalanceQuery = getAccountBalanceQuery;
         }
 
         // Deposit Funds
         [HttpPost("deposit")]
-        public async Task<IActionResult> DepositFunds(Guid userId, decimal amount)
+        public async Task<IActionResult> DepositFunds([FromBody] DepositFundsRequest request)
         {
             try
             {
-                bool result = await _portfolioLogic.DepositFundsAsync(userId, amount);
-
-                if (result)
-                {
-                    return Ok(new { Message = "Funds deposited successfully." });
-                }
-                else
-                {
-                    return BadRequest(new { Message = "Failed to deposit funds." });
-                }
+                await _portfolioAppService.DepositFundsAsync(request.UserId, request.Amount);
+                return Ok(new { Message = "Funds deposited successfully." });
             }
             catch (Exception ex)
             {
@@ -41,20 +39,12 @@ namespace PortfolioService.WebAPI.Controllers
 
         // Withdraw Funds
         [HttpPost("withdraw")]
-        public async Task<IActionResult> WithdrawFunds(Guid userId, decimal amount)
+        public async Task<IActionResult> WithdrawFunds([FromBody] WithdrawFundsRequest request)
         {
             try
             {
-                bool result = await _portfolioLogic.WithdrawFundsAsync(userId, amount);
-
-                if (result)
-                {
-                    return Ok(new { Message = "Funds withdrawn successfully." });
-                }
-                else
-                {
-                    return BadRequest(new { Message = "Failed to withdraw funds." });
-                }
+                await _portfolioAppService.WithdrawFundsAsync(request.UserId, request.Amount);
+                return Ok(new { Message = "Funds withdrawn successfully." });
             }
             catch (Exception ex)
             {
@@ -63,27 +53,18 @@ namespace PortfolioService.WebAPI.Controllers
         }
 
         // Get Account Balance
-        [HttpGet("balance")]
+        [HttpGet("balance/{userId}")]
         public async Task<IActionResult> GetAccountBalance(Guid userId)
         {
             try
             {
-                var portfolio = await _portfolioLogic.GetPortfolioByUserIdAsync(userId);
-
-                if (portfolio != null)
-                {
-                    return Ok(portfolio.AccountBalance);
-                }
-                else
-                {
-                    return NotFound(new { Message = "Portfolio not found for the specified user." });
-                }
+                var balance = await _getAccountBalanceQuery.ExecuteAsync(userId);
+                return Ok(new { Balance = balance });
             }
             catch (Exception ex)
             {
                 return BadRequest(new { Message = ex.Message });
             }
         }
-
     }
 }

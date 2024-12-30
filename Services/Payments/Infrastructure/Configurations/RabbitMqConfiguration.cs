@@ -1,7 +1,7 @@
 using RabbitMQ.Client;
 using Shared.Messaging;
 
-namespace PortfolioService.Infrastructure.Configurations
+namespace PaymentService.Infrastructure.Configurations
 {
     public static class RabbitMqConfiguration
     {
@@ -9,11 +9,9 @@ namespace PortfolioService.Infrastructure.Configurations
         {
             var rabbitMqUri = configuration.GetSection("RabbitMQ")["Uri"];
             var connectionFactory = new RabbitMqConnectionFactory(rabbitMqUri);
-            var connection = connectionFactory.CreateConnection();
-            services.AddSingleton<IConnection>(connection);
+            var rabbitMqConnection = connectionFactory.CreateConnection();
+            services.AddSingleton<IConnection>(rabbitMqConnection);
             services.AddSingleton<IEventBus, RabbitMqEventBus>();
-
-            Console.WriteLine("RabbitMQ connection configured.");
         }
     }
 }

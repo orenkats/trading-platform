@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using PortfolioService.Application.Services;
 using PortfolioService.Application.DTOs;
-using PortfolioService.Application.Queries;
+using PortfolioService.Application.Services;
+using PortfolioService.Domain.Exceptions;
+using Shared.Events;
+using Shared.Messaging;
 using System;
 using System.Threading.Tasks;
 
@@ -11,25 +13,31 @@ namespace PortfolioService.WebAPI.Controllers
     [ApiController]
     public class PortfolioController : ControllerBase
     {
-        private readonly IPortfolioAppService _portfolioAppService;
-        private readonly GetAccountBalanceQuery _getAccountBalanceQuery;
+        private readonly IEventBus _eventBus;
+        private readonly IPortfolioAppService _portfolioAppService; // Injected dependency
 
-        public PortfolioController(
-            IPortfolioAppService portfolioAppService,
-            GetAccountBalanceQuery getAccountBalanceQuery)
+        public PortfolioController(IEventBus eventBus, IPortfolioAppService portfolioAppService)
         {
+            _eventBus = eventBus;
             _portfolioAppService = portfolioAppService;
-            _getAccountBalanceQuery = getAccountBalanceQuery;
         }
 
-        // Deposit Funds
-        [HttpPost("deposit")]
-        public async Task<IActionResult> DepositFunds([FromBody] DepositFundsRequest request)
+        // Publish Deposit Request
+        [HttpPost("publish-deposit-request")]
+        public IActionResult PublishDepositRequest([FromBody] DepositFundsRequest request)
         {
             try
             {
-                await _portfolioAppService.DepositFundsAsync(request.UserId, request.Amount);
-                return Ok(new { Message = "Funds deposited successfully." });
+                // Publish DepositRequestedEvent
+                var depositEvent = new DepositRequestedEvent
+                {
+                    UserId = request.UserId,
+                    Amount = request.Amount,
+                    RequestedAt = DateTime.UtcNow
+                };
+                _eventBus.Publish(depositEvent, "PortfolioExchange");
+
+                return Ok(new { Message = "Deposit request published successfully." });
             }
             catch (Exception ex)
             {
@@ -37,29 +45,20 @@ namespace PortfolioService.WebAPI.Controllers
             }
         }
 
-        // Withdraw Funds
-        [HttpPost("withdraw")]
-        public async Task<IActionResult> WithdrawFunds([FromBody] WithdrawFundsRequest request)
+        // Publish Withdrawal Request
+        [HttpPost("publish-withdrawal-request")]
+        public async Task<IActionResult> PublishWithdrawalRequest([FromBody] WithdrawFundsRequest request)
         {
             try
             {
+                // Call the application service to handle the withdrawal request
                 await _portfolioAppService.WithdrawFundsAsync(request.UserId, request.Amount);
-                return Ok(new { Message = "Funds withdrawn successfully." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = ex.Message });
-            }
-        }
 
-        // Get Account Balance
-        [HttpGet("balance/{userId}")]
-        public async Task<IActionResult> GetAccountBalance(Guid userId)
-        {
-            try
+                return Ok(new { Message = "Withdrawal processed successfully." });
+            }
+            catch (InsufficientFundsException)
             {
-                var balance = await _getAccountBalanceQuery.ExecuteAsync(userId);
-                return Ok(new { Balance = balance });
+                return BadRequest(new { Message = "Insufficient balance for withdrawal." });
             }
             catch (Exception ex)
             {

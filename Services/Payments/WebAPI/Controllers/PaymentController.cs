@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using PaymentService.Application.Services;
+using PaymentService.Application;
 using PaymentService.Application.DTOs;
+using System;
+using System.Threading.Tasks;
 
 namespace PaymentService.WebAPI.Controllers
 {
@@ -15,17 +17,34 @@ namespace PaymentService.WebAPI.Controllers
             _paymentAppService = paymentAppService;
         }
 
-        [HttpPost("process")]
-        public async Task<IActionResult> ProcessPayment([FromBody] PaymentRequestDto request)
+        // Deposit Funds
+        [HttpPost("deposit")]
+        public async Task<IActionResult> DepositFunds([FromBody] PaymentRequestDto request)
         {
-            if (request == null || request.Amount <= 0)
+            try
             {
-                return BadRequest(new { Message = "Invalid payment request." });
+                var response = await _paymentAppService.ProcessPaymentAsync(request.UserId, request.Amount);
+                return Ok(response);
             }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
 
-            var response = await _paymentAppService.ProcessPaymentAsync(request.UserId, request.Amount);
-
-            return Ok(response);
+        // Withdraw Funds
+        [HttpPost("withdraw")]
+        public async Task<IActionResult> WithdrawFunds([FromBody] PaymentRequestDto request)
+        {
+            try
+            {
+                var response = await _paymentAppService.ProcessWithdrawalAsync(request.UserId, request.Amount);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
     }
 }

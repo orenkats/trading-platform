@@ -11,7 +11,7 @@ public class PaymentDomainService : IPaymentDomainService
         _repository = repository;
     }
 
-    public async Task<Payment> ProcessDepositAsync(Guid userId, decimal amount)
+    public async Task<Payment> ProcessPaymentAsync(Guid userId, decimal amount)
     {
         if (amount <= 0)
         {
@@ -24,7 +24,7 @@ public class PaymentDomainService : IPaymentDomainService
             UserId = userId,
             Amount = amount,
             Status = "Pending",
-            Timestamp = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow
         };
 
         await _repository.AddAsync(payment);
@@ -49,7 +49,7 @@ public class PaymentDomainService : IPaymentDomainService
             UserId = userId,
             Amount = -amount, // Negative amount for withdrawals
             Status = "Pending",
-            Timestamp = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow
         };
 
         await _repository.AddAsync(withdrawal);

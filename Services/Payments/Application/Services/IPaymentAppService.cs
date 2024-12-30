@@ -1,9 +1,7 @@
-using PaymentService.Application.DTOs;
-using System;
-using System.Threading.Tasks;
 
+using PaymentService.Application.DTOs;
 public interface IPaymentAppService
 {
-    Task<PaymentResponseDto> ProcessPaymentAsync(Guid userId, decimal amount);
+    Task ProcessDepositAsync(Guid userId, decimal amount);
+    Task ProcessWithdrawalAsync(Guid userId, decimal amount);
 }
-

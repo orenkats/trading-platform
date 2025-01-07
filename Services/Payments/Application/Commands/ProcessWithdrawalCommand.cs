@@ -20,14 +20,15 @@ namespace PaymentService.Application.Commands
             _eventBus = eventBus;
         }
 
-        public async Task<Payment> ExecuteAsync()
+        public async Task ExecuteAsync()
         {
-            // Process the withdrawal
+            // Call the domain logic to process the withdrawal
             var payment = await _domainService.ProcessWithdrawalAsync(_userId, _amount);
 
-            // Publish PaymentProcessedEvent
-            var paymentEvent = new PaymentProcessedEvent
+            // Publish the event based on the payment outcome
+            var withdrawalProcessedEvent = new WithdrawalProcessedEvent
             {
+                EventId = Guid.NewGuid(),
                 UserId = _userId,
                 PaymentId = payment.Id,
                 Amount = payment.Amount,
@@ -35,9 +36,7 @@ namespace PaymentService.Application.Commands
                 Timestamp = DateTime.UtcNow
             };
 
-            _eventBus.Publish(paymentEvent, "PaymentExchange");
-
-            return payment;
+            _eventBus.Publish(withdrawalProcessedEvent, "PaymentExchange");
         }
     }
 }

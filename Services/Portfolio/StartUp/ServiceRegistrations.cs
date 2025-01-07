@@ -1,4 +1,4 @@
-using PortfolioService.Application.Services;
+
 using PortfolioService.Application.EventHandlers;
 using PortfolioService.Domain.Interfaces;
 using PortfolioService.Domain.Services;
@@ -6,7 +6,7 @@ using Shared.Messaging;
 using Shared.Events;
 using PortfolioService.Infrastructure.Configurations;
 using PortfolioService.Infrastructure.EventConsumers;
-using PortfolioService.Infrastructure.Persistence.Repositories;
+using PortfolioService.Infrastructure.Repositories;
 
 namespace PortfolioService.StartUp
 {
@@ -14,9 +14,7 @@ namespace PortfolioService.StartUp
     {
         public static IServiceCollection AddApplicationLayer(this IServiceCollection services)
         {
-            // Register Application Services
-            services.AddScoped<IPortfolioAppService, PortfolioAppService>();
-
+           
             // Register Event Handlers
             services.AddScoped<IEventHandler<UserCreatedEvent>, UserCreatedEventHandler>();
             services.AddScoped<IEventHandler<OrderPlacedEvent>, OrderPlacedEventHandler>();

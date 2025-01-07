@@ -1,5 +1,5 @@
-using PaymentService.Domain.Interfaces;
 using PaymentService.Domain.Entities;
+using PaymentService.Domain.Interfaces;
 using Shared.Events;
 using Shared.Messaging;
 
@@ -20,24 +20,23 @@ namespace PaymentService.Application.Commands
             _eventBus = eventBus;
         }
 
-        public async Task<Payment> ExecuteAsync()
+        public async Task ExecuteAsync()
         {
-            // Process the deposit
+            // Call the domain logic to process the deposit
             var payment = await _domainService.ProcessDepositAsync(_userId, _amount);
 
-            // Publish PaymentProcessedEvent
-            var paymentEvent = new PaymentProcessedEvent
+            // Publish the event based on the payment outcome
+            var depositProcessedEvent = new DepositProcessedEvent
             {
+                EventId = Guid.NewGuid(),
                 UserId = _userId,
                 PaymentId = payment.Id,
-                Amount = _amount,
+                Amount = payment.Amount,
                 Status = payment.Status,
                 Timestamp = DateTime.UtcNow
             };
 
-            _eventBus.Publish(paymentEvent, "PaymentExchange");
-
-            return payment;
+            _eventBus.Publish(depositProcessedEvent, "PaymentExchange");
         }
     }
 }

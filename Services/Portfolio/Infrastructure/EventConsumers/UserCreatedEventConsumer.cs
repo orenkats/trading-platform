@@ -1,6 +1,8 @@
 using Shared.Events;
 using Shared.Messaging;
 using RabbitMQ.Client;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace PortfolioService.Infrastructure.EventConsumers
 {
@@ -9,11 +11,14 @@ namespace PortfolioService.Infrastructure.EventConsumers
         public UserCreatedEventConsumer(
             IServiceProvider serviceProvider,
             IConnection connection,
-            ILogger<ConsumerHostedService<object>> logger)
-            : base(serviceProvider, connection, new ConsumerHostedServiceOptions
-            {
-                QueueName = "PortfolioService_UserCreatedQueue"
-            }, logger)
+            IConfiguration configuration,
+            ILogger<ConsumerHostedService<UserCreatedEvent>> logger)
+            : base(
+                serviceProvider: serviceProvider,
+                connection: connection,
+                configuration: configuration,
+                queueName: "PortfolioService_UserCreatedQueue",
+                logger: logger)
         {
         }
     }

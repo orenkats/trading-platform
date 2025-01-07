@@ -2,6 +2,7 @@ using Shared.Events;
 using Shared.Messaging;
 using RabbitMQ.Client;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace PaymentService.Infrastructure.EventConsumers
 {
@@ -10,11 +11,14 @@ namespace PaymentService.Infrastructure.EventConsumers
         public DepositRequestedEventConsumer(
             IServiceProvider serviceProvider,
             IConnection connection,
-            ILogger<ConsumerHostedService<object>> logger)
-            : base(serviceProvider, connection, new ConsumerHostedServiceOptions
-            {
-                QueueName = "PaymentService_DepositRequestedQueue"
-            }, logger)
+            IConfiguration configuration,
+            ILogger<ConsumerHostedService<DepositRequestedEvent>> logger)
+            : base(
+                serviceProvider: serviceProvider,
+                connection: connection,
+                configuration: configuration,
+                queueName: "PaymentService_DepositRequestedQueue",
+                logger: logger)
         {
         }
     }

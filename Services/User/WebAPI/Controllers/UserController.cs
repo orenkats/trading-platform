@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using UserService.Data.Entities;
-using UserService.Logic;
+using UserService.Application.Commands;
+using UserService.Application.Queries;
+using UserService.Domain.Entities;
 
 namespace UserService.WebAPI.Controllers
 {
@@ -8,18 +9,28 @@ namespace UserService.WebAPI.Controllers
     [Route("api/user")]
     public class UserController : ControllerBase
     {
-        private readonly IUserLogic _userLogic;
+        private readonly GetUserByIdQuery _getUserByIdQuery;
+        private readonly GetAllUsersQuery _getAllUsersQuery;
+        private readonly AddUserCommand _addUserCommand;
+        private readonly DeleteUserCommand _deleteUserCommand;
 
-        public UserController(IUserLogic userLogic)
+        public UserController(
+            GetUserByIdQuery getUserByIdQuery,
+            GetAllUsersQuery getAllUsersQuery,
+            AddUserCommand addUserCommand,
+            DeleteUserCommand deleteUserCommand)
         {
-            _userLogic = userLogic;
+            _getUserByIdQuery = getUserByIdQuery;
+            _getAllUsersQuery = getAllUsersQuery;
+            _addUserCommand = addUserCommand;
+            _deleteUserCommand = deleteUserCommand;
         }
 
         [HttpGet]
         [Route("get-user/{id}")]
         public async Task<IActionResult> GetUserById(Guid id)
         {
-            var user = await _userLogic.GetUserByIdAsync(id);
+            var user = await _getUserByIdQuery.ExecuteAsync(id);
             if (user == null)
             {
                 return NotFound();
@@ -31,7 +42,7 @@ namespace UserService.WebAPI.Controllers
         [Route("get-all-users")]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _userLogic.GetAllUsersAsync();
+            var users = await _getAllUsersQuery.ExecuteAsync();
             return Ok(users);
         }
 
@@ -39,28 +50,15 @@ namespace UserService.WebAPI.Controllers
         [Route("add-user")]
         public async Task<IActionResult> AddUser(User user)
         {
-            await _userLogic.AddUserAsync(user);
+            await _addUserCommand.ExecuteAsync(user);
             return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
-        }
-
-        [HttpPut]
-        [Route("update-user/{id}")]
-        public async Task<IActionResult> UpdateUser(Guid id, User user)
-        {
-            if (id != user.Id)
-            {
-                return BadRequest("User ID mismatch.");
-            }
-
-            await _userLogic.UpdateUserAsync(user);
-            return NoContent();
         }
 
         [HttpDelete]
         [Route("delete-user/{id}")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
-            await _userLogic.DeleteUserAsync(id);
+            await _deleteUserCommand.ExecuteAsync(id);
             return NoContent();
         }
     }

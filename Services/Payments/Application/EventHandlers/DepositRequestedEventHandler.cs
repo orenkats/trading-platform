@@ -1,35 +1,22 @@
-using PaymentService.Application.Services;
+using PaymentService.Application.Commands;
 using Shared.Events;
 using Shared.Messaging;
-using Microsoft.Extensions.Logging;
 
 namespace PaymentService.Application.EventHandlers
 {
     public class DepositRequestedEventHandler : IEventHandler<DepositRequestedEvent>
     {
-        private readonly IPaymentAppService _paymentAppService;
-        private readonly ILogger<DepositRequestedEventHandler> _logger;
+        private readonly ProcessDepositCommand _processDepositCommand;
 
-        public DepositRequestedEventHandler(IPaymentAppService paymentAppService, ILogger<DepositRequestedEventHandler> logger)
+        public DepositRequestedEventHandler(ProcessDepositCommand processDepositCommand)
         {
-            _paymentAppService = paymentAppService;
-            _logger = logger;
+            _processDepositCommand = processDepositCommand;
         }
 
         public async Task HandleAsync(DepositRequestedEvent depositEvent)
         {
-            _logger.LogInformation("Handling DepositRequestedEvent for UserId: {UserId}", depositEvent.UserId);
-
-            try
-            {
-                await _paymentAppService.ProcessDepositAsync(depositEvent.UserId, depositEvent.Amount);
-                _logger.LogInformation("Successfully processed deposit for UserId: {UserId}", depositEvent.UserId);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error handling DepositRequestedEvent for UserId: {UserId}", depositEvent.UserId);
-                throw;
-            }
+            // Execute the deposit command
+            await _processDepositCommand.ExecuteAsync();
         }
     }
 }

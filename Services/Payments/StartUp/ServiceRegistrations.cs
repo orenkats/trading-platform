@@ -1,25 +1,24 @@
-using PortfolioService.Application.Services;
-using PortfolioService.Application.EventHandlers;
-using PortfolioService.Domain.Interfaces;
-using PortfolioService.Domain.Services;
+using PaymentService.Application.EventHandlers;
+using PaymentService.Domain.Interfaces;
+using PaymentService.Domain.Services;
 using Shared.Messaging;
 using Shared.Events;
-using PortfolioService.Infrastructure.Configurations;
-using PortfolioService.Infrastructure.EventConsumers;
-using PortfolioService.Infrastructure.Persistence.Repositories;
+using PaymentService.Infrastracture.Configurations;
+using PaymentService.Infrastructure.EventConsumers;
+using PaymentService.Infrastructure.Repositories;
 
-namespace PortfolioService.StartUp
+namespace PaymentService.StartUp
 {
     public static class ServiceRegistrations
     {
         public static IServiceCollection AddApplicationLayer(this IServiceCollection services)
         {
             // Register Application Services
-            services.AddScoped<IPortfolioAppService, PortfolioAppService>();
+            
 
             // Register Event Handlers
-            services.AddScoped<IEventHandler<UserCreatedEvent>, UserCreatedEventHandler>();
-            services.AddScoped<IEventHandler<OrderPlacedEvent>, OrderPlacedEventHandler>();
+            //services.AddScoped<IEventHandler<UserCreatedEvent>, UserCreatedEventHandler>();
+            //services.AddScoped<IEventHandler<OrderPlacedEvent>, OrderPlacedEventHandler>();
 
             return services;
         }
@@ -27,7 +26,7 @@ namespace PortfolioService.StartUp
         public static IServiceCollection AddDomainLayer(this IServiceCollection services)
         {
             // Register Domain Services
-            services.AddScoped<IPortfolioDomainService, PortfolioDomainService>();
+            services.AddScoped<IPaymentDomainService, PaymentDomainService>();
             return services;
         }
 
@@ -40,11 +39,11 @@ namespace PortfolioService.StartUp
             RabbitMqConfiguration.AddRabbitMqConfiguration(services, configuration);
 
             // Register Repositories
-            services.AddScoped<IPortfolioRepository, PortfolioRepository>();
+            services.AddScoped<IPaymentRepository, PaymentRepository>();
 
             // Register Event Consumers
-            services.AddHostedService<OrderPlacedEventConsumer>();
-            services.AddHostedService<UserCreatedEventConsumer>();
+            //services.AddHostedService<OrderPlacedEventConsumer>();
+            //services.AddHostedService<UserCreatedEventConsumer>();
 
             // Configure Kestrel
             KestrelConfiguration.ConfigureKestrel(builder);

@@ -1,63 +1,65 @@
 using PaymentService.Domain.Entities;
 using PaymentService.Domain.Interfaces;
-using PaymentService.Infrastructure.Persistence.Repositories;
+using PaymentService.Infrastructure.Repositories;
 
-public class PaymentDomainService : IPaymentDomainService
+namespace PaymentService.Domain.Services
 {
-    private readonly IPaymentRepository _repository;
-
-    public PaymentDomainService(IPaymentRepository repository)
+    public class PaymentDomainService : IPaymentDomainService
     {
-        _repository = repository;
-    }
+        private readonly IPaymentRepository _paymentRepository;
 
-    public async Task<Payment> ProcessDepositAsync(Guid userId, decimal amount)
-    {
-        if (amount <= 0)
+        public PaymentDomainService(IPaymentRepository paymentRepository)
         {
-            throw new ArgumentException("Amount must be greater than zero.");
+            _paymentRepository = paymentRepository;
         }
 
-        var payment = new Payment
+        public async Task<Payment> ProcessDepositAsync(Guid userId, decimal amount)
         {
-            Id = Guid.NewGuid(),
-            UserId = userId,
-            Amount = amount,
-            Status = "Pending",
-            Timestamp = DateTime.UtcNow
-        };
+            // Simulate payment processing with a bank or payment gateway
+            var paymentStatus = SimulatePaymentProcessing();
 
-        await _repository.AddAsync(payment);
+            // Create and save the payment record
+            var payment = new Payment
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                Amount = amount,
+                Status = paymentStatus ? "Approved" : "Rejected",
+                Timestamp = DateTime.UtcNow
+            };
 
-        // Simulate payment processing
-        payment.Status = "Completed";
-        await _repository.UpdateAsync(payment);
+            await _paymentRepository.AddAsync(payment);
 
-        return payment;
-    }
-
-    public async Task<Payment> ProcessWithdrawalAsync(Guid userId, decimal amount)
-    {
-        if (amount <= 0)
-        {
-            throw new ArgumentException("Amount must be greater than zero.");
+            // Return the processed payment
+            return payment;
         }
 
-        var withdrawal = new Payment
+        public async Task<Payment> ProcessWithdrawalAsync(Guid userId, decimal amount)
         {
-            Id = Guid.NewGuid(),
-            UserId = userId,
-            Amount = -amount, // Negative amount for withdrawals
-            Status = "Pending",
-            Timestamp = DateTime.UtcNow
-        };
+            // Simulate payment processing with a bank or payment gateway
+            var paymentStatus = SimulatePaymentProcessing();
 
-        await _repository.AddAsync(withdrawal);
+            // Create and save the payment record
+            var payment = new Payment
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                Amount = amount,
+                Status = paymentStatus ? "Approved" : "Rejected",
+                Timestamp = DateTime.UtcNow
+            };
 
-        // Simulate withdrawal processing
-        withdrawal.Status = "Completed";
-        await _repository.UpdateAsync(withdrawal);
+            await _paymentRepository.AddAsync(payment);
 
-        return withdrawal;
+            // Return the processed payment
+            return payment;
+        }
+
+        private bool SimulatePaymentProcessing()
+        {
+            // Simulate external bank or payment gateway logic
+            var random = new Random();
+            return random.Next(0, 2) == 1;
+        }
     }
 }

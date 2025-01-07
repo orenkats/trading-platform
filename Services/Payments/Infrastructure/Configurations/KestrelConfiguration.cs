@@ -1,4 +1,4 @@
-namespace PaymentService.Infrastructure.Configurations
+namespace PaymentService.Infrastracture.Configurations
 {
     public static class KestrelConfiguration
     {

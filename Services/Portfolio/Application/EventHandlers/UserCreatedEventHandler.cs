@@ -1,4 +1,4 @@
-using PortfolioService.Application.Services;
+using PortfolioService.Application.Commands;
 using Shared.Events;
 using Shared.Messaging;
 using Microsoft.Extensions.Logging;
@@ -7,14 +7,14 @@ namespace PortfolioService.Application.EventHandlers
 {
     public class UserCreatedEventHandler : IEventHandler<UserCreatedEvent>
     {
-        private readonly IPortfolioAppService _appService;
+        private readonly CreatePortfolioCommand _createPortfolioCommand;
         private readonly ILogger<UserCreatedEventHandler> _logger;
 
         public UserCreatedEventHandler(
-            IPortfolioAppService appService,
+            CreatePortfolioCommand createPortfolioCommand,
             ILogger<UserCreatedEventHandler> logger)
         {
-            _appService = appService;
+            _createPortfolioCommand = createPortfolioCommand;
             _logger = logger;
         }
 
@@ -24,7 +24,7 @@ namespace PortfolioService.Application.EventHandlers
 
             try
             {
-                await _appService.CreatePortfolioAsync(userCreatedEvent.UserId);
+                await _createPortfolioCommand.ExecuteAsync(userCreatedEvent.UserId);
 
                 _logger.LogInformation("Successfully created portfolio for UserId: {UserId}", userCreatedEvent.UserId);
             }

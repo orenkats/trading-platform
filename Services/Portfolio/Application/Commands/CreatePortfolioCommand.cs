@@ -5,16 +5,14 @@ namespace PortfolioService.Application.Commands
 {
     public class CreatePortfolioCommand
     {
-        private readonly Guid _userId;
         private readonly IPortfolioDomainService _domainService;
 
-        public CreatePortfolioCommand(Guid userId, IPortfolioDomainService domainService)
+        public CreatePortfolioCommand(IPortfolioDomainService domainService)
         {
-            _userId = userId;
             _domainService = domainService;
         }
 
-        public async Task ExecuteAsync()
+        public async Task ExecuteAsync(Guid _userId)
         {
             // Call domain service to handle the business logic
             await _domainService.CreatePortfolioAsync(_userId);

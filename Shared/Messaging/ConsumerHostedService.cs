@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using Microsoft.Extensions.Configuration;
 
 namespace Shared.Messaging
 {
@@ -12,29 +13,37 @@ namespace Shared.Messaging
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IConnection _connection;
-        private readonly string _queueName;
-        private readonly ILogger<ConsumerHostedService<object>> _logger;
+        private readonly QueueConfig _queueConfig;
+        private readonly ILogger<ConsumerHostedService<TEvent>> _logger;
 
         public ConsumerHostedService(
             IServiceProvider serviceProvider,
             IConnection connection,
-            ConsumerHostedServiceOptions options,
-            ILogger<ConsumerHostedService<object>> logger)
+            IConfiguration configuration,
+            string queueName,
+            ILogger<ConsumerHostedService<TEvent>> logger)
         {
             _serviceProvider = serviceProvider;
             _connection = connection;
-            _queueName = options.QueueName ?? throw new ArgumentNullException(nameof(options.QueueName));
             _logger = logger;
+
+            // Retrieve queue configuration dynamically
+            var queues = configuration.GetSection("RabbitMQ:Queues").Get<List<QueueConfig>>() 
+                         ?? throw new ArgumentNullException("RabbitMQ:Queues configuration is missing or invalid.");
+
+            _queueConfig = queues.FirstOrDefault(q => q.Name == queueName) 
+                           ?? throw new ArgumentException($"Queue configuration not found for queue: {queueName}");
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Starting ConsumerHostedService for queue: {QueueName}", _queueName);
+            _logger.LogInformation("Starting ConsumerHostedService for queue: {QueueName}", _queueConfig.Name);
 
             var channel = _connection.CreateModel();
 
-            // Use the QueueConfiguration utility
-            QueueConfiguration.ConfigureQueue(channel, _queueName);
+            // Declare and bind the queue based on configuration
+            channel.QueueDeclare(queue: _queueConfig.Name, durable: true, exclusive: false, autoDelete: false, arguments: null);
+            channel.QueueBind(queue: _queueConfig.Name, exchange: _queueConfig.Exchange, routingKey: _queueConfig.RoutingKey);
 
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += async (_, ea) =>
@@ -74,16 +83,11 @@ namespace Shared.Messaging
                 }
             };
 
-            // Consume messages from the existing queue
-            channel.BasicConsume(queue: _queueName, autoAck: true, consumer: consumer);
-            _logger.LogInformation("Started consuming messages from queue: {QueueName}", _queueName);
+            // Consume messages from the queue
+            channel.BasicConsume(queue: _queueConfig.Name, autoAck: true, consumer: consumer);
+            _logger.LogInformation("Started consuming messages from queue: {QueueName}", _queueConfig.Name);
 
             return Task.CompletedTask;
         }
-    }
-
-    public class ConsumerHostedServiceOptions
-    {
-        public string? QueueName { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-using PortfolioService.Infrastructure.Persistence.Repositories;
+using PortfolioService.Infrastructure.Repositories;
 using PortfolioService.Domain.Exceptions;
 
 namespace PortfolioService.Application.Queries

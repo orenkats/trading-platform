@@ -1,42 +1,28 @@
+using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 
 namespace Shared.Messaging
 {
     public static class QueueConfiguration
     {
-        public static void ConfigureQueue(IModel channel, string queueName)
+        public static void ConfigureQueues(IModel channel, IConfiguration configuration)
         {
-            switch (queueName)
+            var queues = configuration.GetSection("RabbitMQ:Queues").Get<List<QueueConfig>>();
+
+            foreach (var queue in queues)
             {
-                case "PortfolioService_UserCreatedQueue":
-                    channel.QueueDeclare(queue: "PortfolioService_UserCreatedQueue", durable: true, exclusive: false, autoDelete: false, arguments: null);
-                    channel.QueueBind(queue: "PortfolioService_UserCreatedQueue", exchange: "UserExchange", routingKey: "");
-                    break;
-
-                case "PortfolioService_OrderPlacedQueue":
-                    channel.QueueDeclare(queue: "PortfolioService_OrderPlacedQueue", durable: true, exclusive: false, autoDelete: false, arguments: null);
-                    channel.QueueBind(queue: "PortfolioService_OrderPlacedQueue", exchange: "OrderExchange", routingKey: "");
-                    break;    
-
-                case "NotificationsService_UserCreatedQueue":
-                    channel.QueueDeclare(queue: "NotificationsService_UserCreatedQueue", durable: true, exclusive: false, autoDelete: false, arguments: null);
-                    channel.QueueBind(queue: "NotificationsService_UserCreatedQueue", exchange: "UserExchange", routingKey: "");
-                    break;
-
-                case "NotificationsService_TransactionsQueue":
-                    channel.QueueDeclare(queue: "NotificationsService_TransactionsQueue", durable: true, exclusive: false, autoDelete: false, arguments: null);
-                    channel.QueueBind(queue: "NotificationsService_TransactionsQueue", exchange: "PortfolioExchange", routingKey: "");
-                    break;  
-
-                case "TransactionsService_TransactionsQueue":
-                    channel.QueueDeclare(queue: "TransactionsService_TransactionsQueue", durable: true, exclusive: false, autoDelete: false, arguments: null);
-                    channel.QueueBind(queue: "TransactionsService_TransactionsQueue", exchange: "PortfolioExchange", routingKey: "");
-                    break;        
-
-                // Add more cases here for additional queues
-                default:
-                    throw new ArgumentException($"Unknown queue: {queueName}");
+                channel.QueueDeclare(queue: queue.Name, durable: true, exclusive: false, autoDelete: false, arguments: null);
+                channel.QueueBind(queue: queue.Name, exchange: queue.Exchange, routingKey: queue.RoutingKey);
             }
         }
+
     }
+    
+    public class QueueConfig
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Exchange { get; set; } = string.Empty;
+        public string RoutingKey { get; set; } = string.Empty;
+    }
+
 }

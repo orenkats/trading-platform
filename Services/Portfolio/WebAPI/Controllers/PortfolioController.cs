@@ -1,43 +1,44 @@
 using Microsoft.AspNetCore.Mvc;
+using PortfolioService.Application.EventHandlers;
 using PortfolioService.Application.DTOs;
-using PortfolioService.Application.Services;
-using PortfolioService.Domain.Exceptions;
 using Shared.Events;
-using Shared.Messaging;
-using System;
-using System.Threading.Tasks;
 
 namespace PortfolioService.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/portfolio")]
     [ApiController]
     public class PortfolioController : ControllerBase
     {
-        private readonly IEventBus _eventBus;
-        private readonly IPortfolioAppService _portfolioAppService; // Injected dependency
+        private readonly DepositRequestedEventHandler _depositRequestedEventHandler;
+        private readonly WithdrawalRequestedEventHandler _withdrawalRequestedEventHandler;
 
-        public PortfolioController(IEventBus eventBus, IPortfolioAppService portfolioAppService)
+        public PortfolioController(
+            DepositRequestedEventHandler depositRequestedEventHandler,
+            WithdrawalRequestedEventHandler withdrawalRequestedEventHandler)
         {
-            _eventBus = eventBus;
-            _portfolioAppService = portfolioAppService;
+            _depositRequestedEventHandler = depositRequestedEventHandler;
+            _withdrawalRequestedEventHandler = withdrawalRequestedEventHandler;
         }
 
-        // Publish Deposit Request
-        [HttpPost("publish-deposit-request")]
-        public IActionResult PublishDepositRequest([FromBody] DepositFundsRequest request)
+        // Process Deposit Request
+        [HttpPost("deposit-request")]
+        public async Task<IActionResult> ProcessDepositRequest([FromBody] DepositFundsRequest request)
         {
             try
             {
-                // Publish DepositRequestedEvent
                 var depositEvent = new DepositRequestedEvent
                 {
+                    EventId = Guid.NewGuid(),
                     UserId = request.UserId,
                     Amount = request.Amount,
-                    RequestedAt = DateTime.UtcNow
+                    Status = "Requested",
+                    Timestamp = DateTime.UtcNow,
+                    
                 };
-                _eventBus.Publish(depositEvent, "PortfolioExchange");
 
-                return Ok(new { Message = "Deposit request published successfully." });
+                await _depositRequestedEventHandler.HandleAsync(depositEvent);
+
+                return Ok(new { Message = "Deposit request processed successfully." });
             }
             catch (Exception ex)
             {
@@ -45,20 +46,25 @@ namespace PortfolioService.WebAPI.Controllers
             }
         }
 
-        // Publish Withdrawal Request
-        [HttpPost("publish-withdrawal-request")]
-        public async Task<IActionResult> PublishWithdrawalRequest([FromBody] WithdrawFundsRequest request)
+        // Process Withdrawal Request
+        [HttpPost("withdraw-request")]
+        public async Task<IActionResult> ProcessWithdrawalRequest([FromBody] WithdrawFundsRequest request)
         {
             try
             {
-                // Call the application service to handle the withdrawal request
-                await _portfolioAppService.WithdrawFundsAsync(request.UserId, request.Amount);
+                var withdrawalEvent = new WithdrawalRequestedEvent
+                {
+                    EventId = Guid.NewGuid(),
+                    UserId = request.UserId,
+                    Amount = request.Amount,
+                    Status = "Requested",
+                    Timestamp = DateTime.UtcNow,
+                    
+                };
 
-                return Ok(new { Message = "Withdrawal processed successfully." });
-            }
-            catch (InsufficientFundsException)
-            {
-                return BadRequest(new { Message = "Insufficient balance for withdrawal." });
+                await _withdrawalRequestedEventHandler.HandleAsync(withdrawalEvent);
+
+                return Ok(new { Message = "Withdrawal request processed successfully." });
             }
             catch (Exception ex)
             {

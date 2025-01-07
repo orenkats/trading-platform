@@ -5,18 +5,14 @@ namespace PortfolioService.Application.Commands
 {
     public class AddHoldingCommand
     {
-        private readonly Guid _userId;
-        private readonly Holding _newHolding;
         private readonly IPortfolioDomainService _domainService;
 
-        public AddHoldingCommand(Guid userId, Holding newHolding, IPortfolioDomainService domainService)
+        public AddHoldingCommand(IPortfolioDomainService domainService)
         {
-            _userId = userId;
-            _newHolding = newHolding;
             _domainService = domainService;
         }
 
-        public async Task ExecuteAsync()
+        public async Task ExecuteAsync(Guid _userId,Holding _newHolding)
         {
             // Delegate the entire operation to the domain service
             await _domainService.AddOrUpdateHoldingAsync(_userId, _newHolding);

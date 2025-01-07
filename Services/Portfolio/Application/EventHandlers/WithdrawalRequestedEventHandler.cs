@@ -1,51 +1,43 @@
-using PortfolioService.Application.Services;
+using PortfolioService.Application.Queries;
 using Shared.Events;
 using Shared.Messaging;
-using Microsoft.Extensions.Logging;
 
 namespace PortfolioService.Application.EventHandlers
 {
     public class WithdrawalRequestedEventHandler : IEventHandler<WithdrawalRequestedEvent>
     {
-        private readonly IPortfolioAppService _portfolioAppService;
+        private readonly GetAccountBalanceQuery _getAccountBalanceQuery;
         private readonly IEventBus _eventBus;
-        private readonly ILogger<WithdrawalRequestedEventHandler> _logger;
 
         public WithdrawalRequestedEventHandler(
-            IPortfolioAppService portfolioAppService,
-            IEventBus eventBus,
-            ILogger<WithdrawalRequestedEventHandler> logger)
+            GetAccountBalanceQuery getAccountBalanceQuery,
+            IEventBus eventBus)
         {
-            _portfolioAppService = portfolioAppService;
+            _getAccountBalanceQuery = getAccountBalanceQuery;
             _eventBus = eventBus;
-            _logger = logger;
         }
 
         public async Task HandleAsync(WithdrawalRequestedEvent withdrawalEvent)
         {
-            _logger.LogInformation("Handling WithdrawalRequestedEvent for UserId: {UserId}", withdrawalEvent.UserId);
+            // Check balance using the query
+            var balance = await _getAccountBalanceQuery.ExecuteAsync(withdrawalEvent.UserId);
 
-            try
+            if (balance < withdrawalEvent.Amount)
             {
-                await _portfolioAppService.WithdrawFundsAsync(withdrawalEvent.UserId, withdrawalEvent.Amount);
-
-                var transactionEvent = new TransactionCreatedEvent
-                {
-                    UserId = withdrawalEvent.UserId,
-                    PortfolioId = Guid.NewGuid(), // Fetch associated PortfolioId if needed
-                    Type = "Withdrawal",
-                    Amount = withdrawalEvent.Amount,
-                    Timestamp = DateTime.UtcNow
-                };
-
-                _eventBus.Publish(transactionEvent, "PortfolioExchange");
-                _logger.LogInformation("Published TransactionCreatedEvent for UserId: {UserId}", withdrawalEvent.UserId);
+                throw new Exception("Insufficient balance for withdrawal.");
             }
-            catch (Exception ex)
+
+            // Publish WithdrawalRequestedEvent to Payment Exchange
+            var withdrawalRequestEvent = new WithdrawalRequestedEvent
             {
-                _logger.LogError(ex, "Error handling WithdrawalRequestedEvent for UserId: {UserId}", withdrawalEvent.UserId);
-                throw;
-            }
+                EventId = Guid.NewGuid(),
+                UserId = withdrawalEvent.UserId,
+                Amount = withdrawalEvent.Amount,
+                Status = "Requested",
+                Timestamp = DateTime.UtcNow
+            };
+
+            _eventBus.Publish(withdrawalRequestEvent, "PortfolioExchange");
         }
     }
 }

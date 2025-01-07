@@ -1,6 +1,6 @@
 
-using PortfolioService.StartUp;
-using PortfolioService.Infrastructure.Persistence;
+using TransactionService.StartUp;
+using TransactionService.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

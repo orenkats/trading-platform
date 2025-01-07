@@ -1,4 +1,4 @@
-using PortfolioService.Application.Services;
+using PortfolioService.Application.Commands;
 using PortfolioService.Domain.Entities;
 using Shared.Events;
 using Shared.Messaging;
@@ -8,14 +8,14 @@ namespace PortfolioService.Application.EventHandlers
 {
     public class OrderPlacedEventHandler : IEventHandler<OrderPlacedEvent>
     {
-        private readonly IPortfolioAppService _appService;
+        private readonly AddHoldingCommand _addHoldingCommand;
         private readonly ILogger<OrderPlacedEventHandler> _logger;
 
         public OrderPlacedEventHandler(
-            IPortfolioAppService appService,
+            AddHoldingCommand addHoldingCommand,
             ILogger<OrderPlacedEventHandler> logger)
         {
-            _appService = appService;
+            _addHoldingCommand = addHoldingCommand;
             _logger = logger;
         }
 
@@ -33,8 +33,8 @@ namespace PortfolioService.Application.EventHandlers
                     AveragePrice = orderPlacedEvent.Price
                 };
 
-                // Delegate to application service
-                await _appService.AddOrUpdateHoldingAsync(orderPlacedEvent.UserId, newHolding);
+                // Use the command directly
+                await _addHoldingCommand.ExecuteAsync(orderPlacedEvent.UserId, newHolding);
 
                 _logger.LogInformation("Successfully handled OrderPlacedEvent for User: {UserId}", orderPlacedEvent.UserId);
             }

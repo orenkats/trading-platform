@@ -1,17 +1,17 @@
 
-using PortfolioService.StartUp;
-using PortfolioService.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
+using PortfolioService.Application.Extensions;
+using PortfolioService.Domain.Extensions;
+using PortfolioService.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add layers to DI container
-builder.Services.AddApplicationLayer();
-builder.Services.AddDomainLayer();
-builder.Services.AddInfrastructureLayer(builder.Configuration, builder);
+// Add services to the container.
+builder.Services
+    .AddApplicationLayer()
+    .AddDomainLayer()
+    .AddInfrastructureLayer(builder.Configuration, builder)
+    .AddControllers();
 
-builder.Services.AddControllers();
-// Configure the HTTP request pipeline
 var app = builder.Build();
 
 app.MapControllers();

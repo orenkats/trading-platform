@@ -12,10 +12,17 @@ namespace PortfolioService.Application.Commands
             _domainService = domainService;
         }
 
-        public async Task ExecuteAsync(Guid _userId,Holding _newHolding)
+        public async Task ExecuteAsync(Guid userId, string stockSymbol, int quantity, decimal price)
         {
+            var newHolding = new Holding
+            {
+                StockSymbol = stockSymbol,
+                Quantity = quantity,
+                AveragePrice = price
+            };
+
             // Delegate the entire operation to the domain service
-            await _domainService.AddOrUpdateHoldingAsync(_userId, _newHolding);
+            await _domainService.AddOrUpdateHoldingAsync(userId, newHolding);
         }
     }
 }

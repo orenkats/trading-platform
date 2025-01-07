@@ -5,7 +5,7 @@ using StockCatalogService.Domain.Services;
 using Shared.Messaging;
 using Shared.Events;
 using StockCatalogService.Infrastructure.Configurations;
-//using StockCatalogService.Infrastructure.EventConsumers;
+//using StockCatalogService.Infrastructure.Consumers;
 using StockCatalogService.Infrastructure.Repositories;
 
 namespace StockCatalogService.StartUp

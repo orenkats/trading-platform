@@ -1,5 +1,4 @@
 using PortfolioService.Application.Commands;
-using PortfolioService.Domain.Entities;
 using Shared.Events;
 using Shared.Messaging;
 using Microsoft.Extensions.Logging;
@@ -26,15 +25,13 @@ namespace PortfolioService.Application.EventHandlers
 
             try
             {
-                var newHolding = new Holding
-                {
-                    StockSymbol = orderPlacedEvent.StockSymbol,
-                    Quantity = orderPlacedEvent.Quantity,
-                    AveragePrice = orderPlacedEvent.Price
-                };
-
-                // Use the command directly
-                await _addHoldingCommand.ExecuteAsync(orderPlacedEvent.UserId, newHolding);
+                // Use the command to handle the operation, passing raw event data
+                await _addHoldingCommand.ExecuteAsync(
+                    orderPlacedEvent.UserId,
+                    orderPlacedEvent.StockSymbol,
+                    orderPlacedEvent.Quantity,
+                    orderPlacedEvent.Price
+                );
 
                 _logger.LogInformation("Successfully handled OrderPlacedEvent for User: {UserId}", orderPlacedEvent.UserId);
             }

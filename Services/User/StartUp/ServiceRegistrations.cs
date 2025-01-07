@@ -1,14 +1,14 @@
 
-using TransactionService.Application.EventHandlers;
-using TransactionService.Domain.Interfaces;
-using TransactionService.Domain.Services;
+using UserService.Application.EventHandlers;
+using UserService.Domain.Interfaces;
+using UserService.Domain.Services;
 using Shared.Messaging;
 using Shared.Events;
-using TransactionService.Infrastructure.Configurations;
-using TransactionService.Infrastructure.EventConsumers;
-using TransactionService.Infrastructure.Repositories;
+using UserService.Infrastructure.Configurations;
+using UserService.Infrastructure.Consumers;
+using UserService.Infrastructure.Repositories;
 
-namespace TransactionService.StartUp
+namespace UserService.StartUp
 {
     public static class ServiceRegistrations
     {
@@ -26,7 +26,7 @@ namespace TransactionService.StartUp
         public static IServiceCollection AddDomainLayer(this IServiceCollection services)
         {
             // Register Domain Services
-            services.AddScoped<ITransactionDomainService, TransactionDomainService>();
+            services.AddScoped<IUserDomainService, UserDomainService>();
             return services;
         }
 
@@ -39,7 +39,7 @@ namespace TransactionService.StartUp
             RabbitMqConfiguration.AddRabbitMqConfiguration(services, configuration);
 
             // Register Repositories
-            services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             // Register Event Consumers
             //services.AddHostedService<OrderPlacedEventConsumer>();

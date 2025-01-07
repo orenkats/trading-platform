@@ -13,13 +13,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order", "Services\Order\Ord
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio", "Services\Portfolio\PortfolioService.csproj", "{54F990C3-A7D0-4BEA-BCA5-81AF0E1C610B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transactions", "Services\Transactions\TransactionsService.csproj", "{454CE455-91A9-440B-A834-1277E4821325}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transaction", "Services\Transaction\TransactionService.csproj", "{454CE455-91A9-440B-A834-1277E4821325}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payments", "Services\Payments\PaymentService.csproj", "{3DB20BE6-75C0-4FA9-877D-1F9115DB019F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payment", "Services\Payment\PaymentService.csproj", "{3DB20BE6-75C0-4FA9-877D-1F9115DB019F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockCatalog", "Services\StockCatalog\StockCatalogService.csproj", "{0AD2BF74-FF63-41CA-B9F7-BBC1CCEC4C96}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications", "Services\Notifications\NotificationsService.csproj", "{7E5C443D-2BE1-4022-B147-6E4B5E4AB0BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification", "Services\Notification\NotificationService.csproj", "{7E5C443D-2BE1-4022-B147-6E4B5E4AB0BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using StockCatalogService.Infrastructure.Persistence;
+using StockCatalogService.Infrastructure.DbContexts;
 
 namespace StockCatalogService.Infrastructure.Configurations
 {

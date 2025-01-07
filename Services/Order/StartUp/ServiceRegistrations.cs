@@ -5,7 +5,7 @@ using OrderService.Domain.Services;
 using Shared.Messaging;
 using Shared.Events;
 using OrderService.Infrastructure.Configurations;
-using OrderService.Infrastructure.EventConsumers;
+using OrderService.Infrastructure.Consumers;
 using OrderService.Infrastructure.Repositories;
 
 namespace OrderService.StartUp

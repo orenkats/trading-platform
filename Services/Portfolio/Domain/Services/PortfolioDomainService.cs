@@ -1,7 +1,6 @@
 using PortfolioService.Domain.Entities;
 using PortfolioService.Domain.Exceptions;
 using PortfolioService.Domain.Interfaces;
-using PortfolioService.Infrastructure.Persistence.Repositories;
 
 namespace PortfolioService.Domain.Services
 {

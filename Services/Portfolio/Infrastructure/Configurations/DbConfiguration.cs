@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using PortfolioService.Infrastructure.Persistence;
+using PortfolioService.Infrastructure.DbContexts;
 
 namespace PortfolioService.Infrastructure.Configurations
 {

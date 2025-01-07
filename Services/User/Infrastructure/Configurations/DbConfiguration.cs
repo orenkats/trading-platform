@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using UserService.Infrastructure.Persistence;
+using UserService.Infrastructure.DbContexts;
 
 namespace UserService.Infrastructure.Configurations
 {

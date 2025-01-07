@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using OrderService.Infrastructure.Persistence;
+using OrderService.Infrastructure.DbContexts;
 
 namespace OrderService.Infrastructure.Configurations
 {

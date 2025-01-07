@@ -4,11 +4,11 @@ using StockCatalogService.Infrastructure.Repositories;
 
 namespace StockCatalogService.Domain.Services
 {
-    public class StockCatalogLogic : IStockCatalogLogic
+    public class StockCatalogDomainService : IStockCatalogDomainService
     {
         private readonly IStockCatalogRepository _stockCatalogRepository;
 
-        public StockCatalogLogic(IStockCatalogRepository stockCatalogRepository)
+        public StockCatalogDomainService(IStockCatalogRepository stockCatalogRepository)
         {
             _stockCatalogRepository = stockCatalogRepository;
         }

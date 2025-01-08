@@ -1,19 +1,17 @@
-using Shared.Events;
-using Shared.Messaging;
 using RabbitMQ.Client;
+using Shared.Messaging;
+using Shared.Messaging.Interfaces;
+using Microsoft.Extensions.Configuration;
 
-namespace NotificationsService.EventConsumers
+namespace NotificationService.Infrastructure.Consumers
 {
-    public class UserCreatedEventConsumer : ConsumerHostedService<UserCreatedEvent>
+    public class UserCreatedEventConsumer : RabbitMqBaseConsumer
     {
         public UserCreatedEventConsumer(
-            IServiceProvider serviceProvider,
             IConnection connection,
-            ILogger<ConsumerHostedService<object>> logger)
-            : base(serviceProvider, connection, new ConsumerHostedServiceOptions
-            {
-                QueueName = "NotificationsService_UserCreatedQueue"
-            }, logger)
+            IMessageProcessor processor,
+            IConfiguration configuration)
+            : base(connection, processor, configuration)
         {
         }
     }

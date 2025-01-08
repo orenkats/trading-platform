@@ -1,24 +1,17 @@
-using Shared.Events;
-using Shared.Messaging;
 using RabbitMQ.Client;
-using Microsoft.Extensions.Logging;
+using Shared.Messaging;
+using Shared.Messaging.Interfaces;
 using Microsoft.Extensions.Configuration;
 
 namespace PortfolioService.Infrastructure.Consumers
 {
-    public class WithdrawalProcessedEventConsumer : ConsumerHostedService<WithdrawalProcessedEvent>
+    public class WithdrawalProcessedConsumer : RabbitMqBaseConsumer
     {
-        public WithdrawalProcessedEventConsumer(
-            IServiceProvider serviceProvider,
+        public WithdrawalProcessedConsumer(
             IConnection connection,
-            IConfiguration configuration,
-            ILogger<ConsumerHostedService<WithdrawalProcessedEvent>> logger)
-            : base(
-                serviceProvider: serviceProvider,
-                connection: connection,
-                configuration: configuration,
-                queueName: "PortfolioService_WithdrawalProcessedQueue",
-                logger: logger)
+            IMessageProcessor processor,
+            IConfiguration configuration)
+            : base(connection, processor, configuration)
         {
         }
     }

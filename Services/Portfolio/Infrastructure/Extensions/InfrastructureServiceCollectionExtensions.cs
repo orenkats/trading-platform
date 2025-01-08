@@ -3,6 +3,7 @@ using PortfolioService.Infrastructure.Consumers;
 using PortfolioService.Infrastructure.Repositories;
 using PortfolioService.Domain.Interfaces;
 using Shared.Messaging;
+using Shared.Events;
 
 namespace PortfolioService.Infrastructure.Extensions
 {
@@ -22,9 +23,9 @@ namespace PortfolioService.Infrastructure.Extensions
             // Register Repositories
             services.AddScoped<IPortfolioRepository, PortfolioRepository>();
 
-            // Register Event Consumers
-            services.AddHostedService<OrderPlacedEventConsumer>();
-            services.AddHostedService<UserCreatedEventConsumer>();
+            // Register Event Consumers (Directly use RabbitMqBaseConsumer)
+            services.AddHostedService<RabbitMqBaseConsumer<OrderPlacedEvent>>();
+            services.AddHostedService<RabbitMqBaseConsumer<UserCreatedEvent>>();
 
             // Configure Kestrel
             KestrelConfiguration.ConfigureKestrel(builder);

@@ -1,7 +1,7 @@
 using RabbitMQ.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-
+using Shared.Messaging.Interfaces;
 namespace Shared.Messaging
 {
     public static class RabbitMqConfiguration
@@ -12,7 +12,7 @@ namespace Shared.Messaging
             var connectionFactory = new RabbitMqConnectionFactory(rabbitMqUri);
             var connection = connectionFactory.CreateConnection();
             services.AddSingleton<IConnection>(connection);
-            services.AddSingleton<IEventBus, RabbitMqEventBus>();
+            services.AddSingleton<IEventPublisher, RabbitMqBasePublisher>();
 
             Console.WriteLine("RabbitMQ connection configured.");
         }

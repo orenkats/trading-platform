@@ -1,24 +1,17 @@
-using Shared.Events;
-using Shared.Messaging;
 using RabbitMQ.Client;
-using Microsoft.Extensions.Logging;
+using Shared.Messaging;
+using Shared.Messaging.Interfaces;
 using Microsoft.Extensions.Configuration;
 
 namespace PortfolioService.Infrastructure.Consumers
 {
-    public class DepositProcessedEventConsumer : ConsumerHostedService<DepositProcessedEvent>
+    public class DepositProcessedConsumer : RabbitMqBaseConsumer
     {
-        public DepositProcessedEventConsumer(
-            IServiceProvider serviceProvider,
+        public DepositProcessedConsumer(
             IConnection connection,
-            IConfiguration configuration,
-            ILogger<ConsumerHostedService<DepositProcessedEvent>> logger)
-            : base(
-                serviceProvider: serviceProvider,
-                connection: connection,
-                configuration: configuration,
-                queueName: "PortfolioService_DepositProcessedQueue",
-                logger: logger)
+            IMessageProcessor processor,
+            IConfiguration configuration)
+            : base(connection, processor, configuration)
         {
         }
     }

@@ -5,11 +5,11 @@ namespace PortfolioService.Infrastructure.Publishers
 {
     public class DepositRequestedEventPublisher
     {
-        private readonly IEventBus _eventBus;
+        private readonly IEventPublisher _eventPublisher;
 
-        public DepositRequestedEventPublisher(IEventBus eventBus)
+        public DepositRequestedEventPublisher(IEventPublisher eventPublisher)
         {
-            _eventBus = eventBus;
+            _eventPublisher = eventPublisher;
         }
 
         public void PublishDepositRequested(Guid userId, decimal amount)
@@ -22,7 +22,7 @@ namespace PortfolioService.Infrastructure.Publishers
                 Timestamp = DateTime.UtcNow
             };
 
-            _eventBus.Publish(depositRequestedEvent, "PortfolioExchange");
+            _eventPublisher.Publish(depositRequestedEvent, "PortfolioExchange");
         }
     }
 }

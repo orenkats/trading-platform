@@ -1,24 +1,17 @@
-using Shared.Events;
-using Shared.Messaging;
 using RabbitMQ.Client;
-using Microsoft.Extensions.Logging;
+using Shared.Messaging;
+using Shared.Messaging.Interfaces;
 using Microsoft.Extensions.Configuration;
 
 namespace PaymentService.Infrastructure.Consumers
 {
-    public class WithdrawalRequestedEventConsumer : ConsumerHostedService<WithdrawalRequestedEvent>
+    public class WithdrawalRequestedConsumer : RabbitMqBaseConsumer
     {
-        public WithdrawalRequestedEventConsumer(
-            IServiceProvider serviceProvider,
+        public WithdrawalRequestedConsumer(
             IConnection connection,
-            IConfiguration configuration,
-            ILogger<ConsumerHostedService<WithdrawalRequestedEvent>> logger)
-            : base(
-                serviceProvider: serviceProvider,
-                connection: connection,
-                configuration: configuration,
-                queueName: "PaymentService_WithdrawalRequestedQueue",
-                logger: logger)
+            IMessageProcessor processor,
+            IConfiguration configuration)
+            : base(connection, processor, configuration)
         {
         }
     }

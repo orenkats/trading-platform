@@ -1,24 +1,17 @@
-using Shared.Events;
-using Shared.Messaging;
 using RabbitMQ.Client;
-using Microsoft.Extensions.Logging;
+using Shared.Messaging;
+using Shared.Messaging.Interfaces;
 using Microsoft.Extensions.Configuration;
 
 namespace PortfolioService.Infrastructure.Consumers
 {
-    public class OrderPlacedEventConsumer : ConsumerHostedService<OrderPlacedEvent>
+    public class OrderPlacedConsumer : RabbitMqBaseConsumer
     {
-        public OrderPlacedEventConsumer(
-            IServiceProvider serviceProvider,
+        public OrderPlacedConsumer(
             IConnection connection,
-            IConfiguration configuration,
-            ILogger<ConsumerHostedService<OrderPlacedEvent>> logger)
-            : base(
-                serviceProvider: serviceProvider,
-                connection: connection,
-                configuration: configuration,
-                queueName: "PortfolioService_OrderPlacedQueue",
-                logger: logger)
+            IMessageProcessor processor,
+            IConfiguration configuration)
+            : base(connection, processor, configuration)
         {
         }
     }

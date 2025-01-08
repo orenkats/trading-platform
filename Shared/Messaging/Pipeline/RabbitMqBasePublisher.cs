@@ -1,14 +1,15 @@
 using System.Text;
 using System.Text.Json;
 using RabbitMQ.Client;
+using Shared.Messaging.Interfaces;
 
 namespace Shared.Messaging
 {
-    public class RabbitMqEventBus : IEventBus
+    public class RabbitMqBasePublisher : IEventPublisher
     {
         private readonly IConnection _connection;
 
-        public RabbitMqEventBus(IConnection connection)
+        public RabbitMqBasePublisher(IConnection connection)
         {
             _connection = connection;
         }

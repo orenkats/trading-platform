@@ -1,24 +1,17 @@
-using Shared.Events;
-using Shared.Messaging;
 using RabbitMQ.Client;
-using Microsoft.Extensions.Logging;
+using Shared.Messaging;
+using Shared.Messaging.Interfaces;
 using Microsoft.Extensions.Configuration;
 
 namespace PaymentService.Infrastructure.Consumers
 {
-    public class DepositRequestedEventConsumer : ConsumerHostedService<DepositRequestedEvent>
+    public class DepositRequestedConsumer : RabbitMqBaseConsumer
     {
-        public DepositRequestedEventConsumer(
-            IServiceProvider serviceProvider,
+        public DepositRequestedConsumer(
             IConnection connection,
-            IConfiguration configuration,
-            ILogger<ConsumerHostedService<DepositRequestedEvent>> logger)
-            : base(
-                serviceProvider: serviceProvider,
-                connection: connection,
-                configuration: configuration,
-                queueName: "PaymentService_DepositRequestedQueue",
-                logger: logger)
+            IMessageProcessor processor,
+            IConfiguration configuration)
+            : base(connection, processor, configuration)
         {
         }
     }

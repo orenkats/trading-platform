@@ -5,11 +5,11 @@ namespace PortfolioService.Infrastructure.Publishers
 {
     public class FundsDepositedEventProducer
     {
-        private readonly IEventBus _eventBus;
+        private readonly IEventPublisher _eventPublisher;
 
-        public FundsDepositedEventProducer(IEventBus eventBus)
+        public FundsDepositedEventProducer(IEventPublisher eventPublisher)
         {
-            _eventBus = eventBus;
+            _eventPublisher = eventPublisher;
         }
 
         public void PublishFundsDeposited(Guid userId, decimal UpdatedBalance)
@@ -21,7 +21,7 @@ namespace PortfolioService.Infrastructure.Publishers
                 Timestamp = DateTime.UtcNow
             };
 
-            _eventBus.Publish(eventMessage, "PortfolioExchange");
+            _eventPublisher.Publish(eventMessage, "PortfolioExchange");
         }
     }
 }

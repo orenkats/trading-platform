@@ -1,24 +1,17 @@
-using Shared.Events;
-using Shared.Messaging;
 using RabbitMQ.Client;
-using Microsoft.Extensions.Logging;
+using Shared.Messaging;
+using Shared.Messaging.Interfaces;
 using Microsoft.Extensions.Configuration;
 
 namespace TransactionService.Infrastructure.Consumers
 {
-    public class PaymentProcessedEventConsumer : ConsumerHostedService<PaymentProcessedEvent>
+    public class PaymentProcessedConsumer : RabbitMqBaseConsumer
     {
-        public PaymentProcessedEventConsumer(
-            IServiceProvider serviceProvider,
+        public PaymentProcessedConsumer(
             IConnection connection,
-            IConfiguration configuration,
-            ILogger<ConsumerHostedService<PaymentProcessedEvent>> logger)
-            : base(
-                serviceProvider: serviceProvider,
-                connection: connection,
-                configuration: configuration,
-                queueName: "TransactionService_PaymentProcessedQueue",
-                logger: logger)
+            IMessageProcessor processor,
+            IConfiguration configuration)
+            : base(connection, processor, configuration)
         {
         }
     }

@@ -1,20 +1,17 @@
-using Shared.Events;
-using Shared.Messaging;
-using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
+using Shared.Messaging;
+using Shared.Messaging.Interfaces;
+using Microsoft.Extensions.Configuration;
 
-namespace NotificationsService.EventConsumers
+namespace NotificationService.Infrastructure.Consumers
 {
-    public class FundsEventConsumer : ConsumerHostedService<object>
+    public class FundsEventConsumer : RabbitMqBaseConsumer
     {
         public FundsEventConsumer(
-            IServiceProvider serviceProvider,
             IConnection connection,
-            ILogger<ConsumerHostedService<object>> logger)
-            : base(serviceProvider, connection, new ConsumerHostedServiceOptions
-            {
-                QueueName = "NotificationsService_TransactionsQueue"
-            }, logger)
+            IMessageProcessor processor,
+            IConfiguration configuration)
+            : base(connection, processor, configuration)
         {
         }
     }

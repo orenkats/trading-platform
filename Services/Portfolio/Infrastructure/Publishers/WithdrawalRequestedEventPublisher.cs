@@ -5,11 +5,11 @@ namespace PortfolioService.Infrastructure.Publishers
 {
     public class WithdrawalRequestedEventPublisher
     {
-        private readonly IEventBus _eventBus;
+        private readonly IEventPublisher _eventPublisher;
 
-        public WithdrawalRequestedEventPublisher(IEventBus eventBus)
+        public WithdrawalRequestedEventPublisher(IEventPublisher eventPublisher)
         {
-            _eventBus = eventBus;
+            _eventPublisher = eventPublisher;
         }
 
         public void PublishWithdrawalRequested(Guid userId, decimal amount)
@@ -22,7 +22,7 @@ namespace PortfolioService.Infrastructure.Publishers
                 Timestamp = DateTime.UtcNow
             };
 
-            _eventBus.Publish(withdrawalRequestedEvent, "PortfolioExchange");
+            _eventPublisher.Publish(withdrawalRequestedEvent, "PortfolioExchange");
         }
     }
 }

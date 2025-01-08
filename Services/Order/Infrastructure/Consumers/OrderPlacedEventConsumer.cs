@@ -6,13 +6,13 @@ using Microsoft.Extensions.Configuration;
 
 namespace OrderService.Infrastructure.Consumers
 {
-    public class OrderPlacedEventConsumer : ConsumerHostedService<OrderPlacedEvent>
+    public class OrderPlacedEventConsumer : RabbitMqBaseConsumer<OrderPlacedEvent>
     {
         public OrderPlacedEventConsumer(
             IServiceProvider serviceProvider,
             IConnection connection,
             IConfiguration configuration,
-            ILogger<ConsumerHostedService<OrderPlacedEvent>> logger)
+            ILogger<RabbitMqBaseConsumer<OrderPlacedEvent>> logger)
             : base(
                 serviceProvider: serviceProvider,
                 connection: connection,
